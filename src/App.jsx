@@ -282,6 +282,9 @@ export default function App() {
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
                 </p>
+                <p className="text-slate-400 text-base border-l-2 border-amber-500 pl-4 italic">
+                  My approach is practical but strictly by the book. I have the capability to rectify minor issues (such as incorrect glands or minor wiring faults) on the spot to keep your mobilisation on track. However, major discrepancies are pushed firmly back to the OEM. I do not rubber-stamp equipment; I ensure absolute adherence to AS/NZS 60079.
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-8 mt-12">
                 <div>
@@ -289,8 +292,8 @@ export default function App() {
                   <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Years Experience</p>
                 </div>
                 <div>
-                  <h4 className="text-amber-500 font-black text-4xl mb-1">100%</h4>
-                  <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Gate Pass Rate</p>
+                  <h4 className="text-amber-500 font-black text-3xl mb-1 mt-1">Zero</h4>
+                  <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Compromise</p>
                 </div>
               </div>
             </div>
