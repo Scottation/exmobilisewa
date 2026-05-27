@@ -245,7 +245,7 @@ export default function App() {
               {[
                 { title: 'Pre-Mob Inspections', desc: 'Visual, Close, and Detailed inspections for temporary gear heading offshore.', icon: ShieldCheck },
                 { title: 'HAVD Compilation', desc: 'Creation and auditing of Verification Dossiers to meet specific Operator standards.', icon: FileCheck },
-                { title: 'Ex Rectification', desc: 'Technical solutions for non-conformances found during yard gate-checks.', icon: Wrench },
+                { title: 'Ex Rectification', desc: 'Technical solutions for non-conformances found during pre-mobilisation checks.', icon: Wrench },
                 { title: 'SME Consulting', desc: 'Guidance on AS/NZS 60079 requirements for new equipment procurement.', icon: Award }
               ].map((s, i) => (
                 <div key={i} className="p-6 border-l-4 border-amber-500 bg-slate-50">
