@@ -137,7 +137,7 @@ export default function App() {
               <button onClick={() => scrollToSection('contact')} className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center">
                 Book Inspection <ChevronRight className="ml-2 h-5 w-5" />
               </button>
-              <a href="tel:0434101707" className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center border border-slate-700">
+              <a href="tel:+61434101707" className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center border border-slate-700">
                 <Phone className="mr-2 h-5 w-5 text-amber-500" /> 0434 101 707
               </a>
             </div>
@@ -337,8 +337,8 @@ export default function App() {
           <div className="mt-16 grid md:grid-cols-2 gap-8 text-center md:text-left">
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Direct Contact</p>
-              <p className="text-xl font-black">inspections@exmobilisewa.com.au</p>
-              <p className="text-xl font-black text-amber-600">0434 101 707</p>
+              <a href="mailto:inspections@exmobilisewa.com.au" className="block text-xl font-black hover:text-amber-500 transition-colors">inspections@exmobilisewa.com.au</a>
+              <a href="tel:+61434101707" className="block text-xl font-black text-amber-600 hover:text-amber-500 transition-colors">0434 101 707</a>
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
