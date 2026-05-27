@@ -5,7 +5,6 @@ import {
   Wrench, 
   HardHat, 
   CheckCircle2, 
-  Phone, 
   Mail, 
   MapPin, 
   Menu, 
@@ -28,15 +27,36 @@ export default function App() {
     }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('submitting');
-    // Simulate network request
-    setTimeout(() => {
-      setFormStatus('success');
-      e.target.reset();
-      setTimeout(() => setFormStatus('idle'), 5000);
-    }, 1000);
+    
+    const formData = new FormData(e.target);
+    
+    // REPLACE THIS STRING WITH YOUR WEB3FORMS ACCESS KEY
+    formData.append("access_key", "e5e7d78e-b3bd-46c1-901e-a88ccb01d584"); 
+    formData.append("subject", "New Pre-Mob Inspection Request - ExMobilise WA");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setFormStatus('success');
+        e.target.reset();
+        setTimeout(() => setFormStatus('idle'), 5000);
+      } else {
+        console.error("Error", data);
+        setFormStatus('error');
+      }
+    } catch (error) {
+      console.error("Error", error);
+      setFormStatus('error');
+    }
   };
 
   const hexClipPath = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
@@ -64,12 +84,12 @@ export default function App() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8 items-center">
-              <button onClick={() => scrollToSection('services')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors cursor-pointer">Services</button>
-              <button onClick={() => scrollToSection('why-me')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors cursor-pointer">Why an SME?</button>
-              <button onClick={() => scrollToSection('process')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors cursor-pointer">Process</button>
+              <button onClick={() => scrollToSection('services')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors">Services</button>
+              <button onClick={() => scrollToSection('why-me')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors">Why an SME?</button>
+              <button onClick={() => scrollToSection('process')} className="text-slate-300 hover:text-amber-400 font-medium transition-colors">Process</button>
               <button 
                 onClick={() => scrollToSection('contact')} 
-                className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-md font-bold transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] cursor-pointer"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-md font-bold transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
               >
                 Book Inspection
               </button>
@@ -79,7 +99,7 @@ export default function App() {
             <div className="md:hidden flex items-center">
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-slate-300 hover:text-white cursor-pointer"
+                className="text-slate-300 hover:text-white"
               >
                 {isMobileMenuOpen ? <X className="h-8 w-8" /> : <Menu className="h-8 w-8" />}
               </button>
@@ -91,10 +111,10 @@ export default function App() {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-slate-800 border-b border-slate-700">
             <div className="px-4 pt-2 pb-6 space-y-2">
-              <button onClick={() => scrollToSection('services')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md cursor-pointer">Services</button>
-              <button onClick={() => scrollToSection('why-me')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md cursor-pointer">Why an SME?</button>
-              <button onClick={() => scrollToSection('process')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md cursor-pointer">Process</button>
-              <button onClick={() => scrollToSection('contact')} className="block w-full text-center mt-4 bg-amber-500 text-slate-900 px-3 py-3 rounded-md font-bold cursor-pointer">Book Inspection</button>
+              <button onClick={() => scrollToSection('services')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md">Services</button>
+              <button onClick={() => scrollToSection('why-me')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md">Why an SME?</button>
+              <button onClick={() => scrollToSection('process')} className="block w-full text-left px-3 py-3 text-base font-medium text-slate-300 hover:text-amber-400 hover:bg-slate-700 rounded-md">Process</button>
+              <button onClick={() => scrollToSection('contact')} className="block w-full text-center mt-4 bg-amber-500 text-slate-900 px-3 py-3 rounded-md font-bold">Book Inspection</button>
             </div>
           </div>
         )}
@@ -118,7 +138,7 @@ export default function App() {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center md:text-left flex flex-col md:flex-row items-center">
-          <div className="md:w-3/5 md:pr-12 animate-fade-in">
+          <div className="md:w-3/5 md:pr-12">
             <div className="inline-flex items-center space-x-2 bg-slate-800 border border-slate-700 rounded-full px-4 py-1.5 mb-6">
               <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
               <span className="text-sm font-medium text-slate-300">AS/NZS 60079 Compliant Inspections</span>
@@ -132,14 +152,14 @@ export default function App() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <button 
                 onClick={() => scrollToSection('contact')}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-4 rounded-md font-bold text-lg transition-all shadow-lg flex items-center justify-center group cursor-pointer"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-4 rounded-md font-bold text-lg transition-all shadow-lg flex items-center justify-center group"
               >
                 Schedule Pre-Mob Inspection
                 <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
                 onClick={() => scrollToSection('services')}
-                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center cursor-pointer"
+                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center"
               >
                 View Services
               </button>
@@ -147,7 +167,7 @@ export default function App() {
           </div>
           
           <div className="hidden md:block md:w-2/5 relative mt-12 md:mt-0">
-            {/* Visual mockup of an Ex piece of equipment/report */}
+            {/* Visual placeholder for an Ex piece of equipment/report */}
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-2xl relative z-10 transform rotate-2 hover:rotate-0 transition-transform duration-500">
               <div className="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
                 <div className="flex items-center">
@@ -377,7 +397,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-slate-50 rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row border border-slate-200">
             
-            {/* Contact Info */}
+            {/* Contact Info - Phone number removed to prevent scraping */}
             <div className="lg:w-2/5 bg-amber-500 p-10 text-slate-900 flex flex-col justify-between relative overflow-hidden">
               {/* Decorative graphic */}
               <div className="absolute -bottom-24 -right-24 text-amber-600/30">
@@ -387,22 +407,15 @@ export default function App() {
               <div className="relative z-10">
                 <h2 className="text-3xl font-extrabold mb-4">Ready to Mobilise?</h2>
                 <p className="mb-8 font-medium text-slate-800">
-                  Don't leave site entry to chance. Book an SME for your pre-mobilisation EEHA inspections today.
+                  Don't leave site entry to chance. Book an SME for your pre-mobilisation EEHA inspections today. Use the secure form to request a callback or quote.
                 </p>
                 
                 <div className="space-y-6">
                   <div className="flex items-center">
-                    <Phone className="h-6 w-6 mr-4" />
-                    <div>
-                      <p className="text-sm font-bold uppercase tracking-wider text-slate-800">Call Direct</p>
-                      <p className="font-bold text-lg">0400 000 000</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center">
                     <Mail className="h-6 w-6 mr-4" />
                     <div>
                       <p className="text-sm font-bold uppercase tracking-wider text-slate-800">Email Dossiers/Drawings</p>
-                      <p className="font-bold text-lg">inspections@exmobilise.com.au</p>
+                      <p className="font-bold text-lg">inspections@exmobilisewa.com.au</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -428,44 +441,56 @@ export default function App() {
                     <p className="text-green-700 mt-1">Thank you. I have received your pre-mobilisation enquiry and will review the details. You can expect a response within 2-4 hours.</p>
                   </div>
                 </div>
+              ) : formStatus === 'error' ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 flex items-start">
+                  <AlertTriangle className="h-8 w-8 text-red-500 mr-4 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-lg font-bold text-red-800">Something went wrong</h4>
+                    <p className="text-red-700 mt-1">There was an issue sending your request. Please email me directly at inspections@exmobilisewa.com.au.</p>
+                    <button onClick={() => setFormStatus('idle')} className="mt-3 text-sm font-bold text-red-600 underline">Try again</button>
+                  </div>
+                </div>
               ) : (
                 <form onSubmit={handleFormSubmit} className="space-y-6">
+                  {/* Honeypot field to catch spam bots */}
+                  <input type="checkbox" name="botcheck" className="hidden" style={{ display: 'none' }} />
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                      <input type="text" id="name" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="John Doe" />
+                      <input type="text" name="name" id="name" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="John Doe" />
                     </div>
                     <div>
                       <label htmlFor="company" className="block text-sm font-medium text-slate-700 mb-1">Company</label>
-                      <input type="text" id="company" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="O&amp;G Logistics Co." />
+                      <input type="text" name="company" id="company" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="O&amp;G Logistics Co." />
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-                      <input type="email" id="email" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="john@company.com" />
+                      <input type="email" name="email" id="email" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="john@company.com" />
                     </div>
                     <div>
                       <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
-                      <input type="tel" id="phone" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="0400 000 000" />
+                      <input type="tel" name="phone" id="phone" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="0400 000 000" />
                     </div>
                   </div>
 
                   <div>
                     <label htmlFor="equipment" className="block text-sm font-medium text-slate-700 mb-1">Equipment Type &amp; Mobilisation Date</label>
-                    <input type="text" id="equipment" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="e.g. 2x Diesel Generators, Mob date: 15th Nov" />
+                    <input type="text" name="equipment" id="equipment" required className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="e.g. 2x Diesel Generators, Mob date: 15th Nov" />
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">Additional Details (Destinations, known non-conformances, etc.)</label>
-                    <textarea id="message" rows="4" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="Heading to Barrow Island. Need full detailed inspection and dossier update..."></textarea>
+                    <textarea name="message" id="message" rows="4" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-amber-500 focus:border-amber-500" placeholder="Heading to Barrow Island. Need full detailed inspection and dossier update..."></textarea>
                   </div>
 
                   <button 
                     type="submit" 
                     disabled={formStatus === 'submitting'}
-                    className={`w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-md transition-colors flex justify-center items-center cursor-pointer ${formStatus === 'submitting' ? 'opacity-75 cursor-not-allowed' : ''}`}
+                    className={`w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-md transition-colors flex justify-center items-center ${formStatus === 'submitting' ? 'opacity-75 cursor-not-allowed' : ''}`}
                   >
                     {formStatus === 'submitting' ? 'Sending Request...' : 'Submit Request'}
                   </button>
@@ -498,10 +523,10 @@ export default function App() {
           <div>
             <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              <li><button onClick={() => scrollToSection('home')} className="hover:text-amber-500 transition-colors cursor-pointer">Home</button></li>
-              <li><button onClick={() => scrollToSection('services')} className="hover:text-amber-500 transition-colors cursor-pointer">Services</button></li>
-              <li><button onClick={() => scrollToSection('why-me')} className="hover:text-amber-500 transition-colors cursor-pointer">Why Choose an SME</button></li>
-              <li><button onClick={() => scrollToSection('contact')} className="hover:text-amber-500 transition-colors cursor-pointer">Contact / Book</button></li>
+              <li><button onClick={() => scrollToSection('home')} className="hover:text-amber-500 transition-colors">Home</button></li>
+              <li><button onClick={() => scrollToSection('services')} className="hover:text-amber-500 transition-colors">Services</button></li>
+              <li><button onClick={() => scrollToSection('why-me')} className="hover:text-amber-500 transition-colors">Why Choose an SME</button></li>
+              <li><button onClick={() => scrollToSection('contact')} className="hover:text-amber-500 transition-colors">Contact / Book</button></li>
             </ul>
           </div>
           
