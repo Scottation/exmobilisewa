@@ -118,7 +118,9 @@ export default function App() {
             <rect width="100%" height="100%" fill="url(#hexagons)" />
           </svg>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
+          {/* Hero text */}
           <div className="md:w-3/5 text-center md:text-left">
             <div className="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
               <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
@@ -139,6 +141,65 @@ export default function App() {
                 <Phone className="mr-2 h-5 w-5 text-amber-500" /> 0434 101 707
               </a>
             </div>
+          </div>
+
+          {/* Inspection Test Record (ITR) Interactive Mock-up Document */}
+          <div className="w-full md:w-2/5 relative">
+            <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-2xl relative z-10 transform rotate-2 hover:rotate-0 hover:-translate-y-2 transition-all duration-500 cursor-pointer group">
+              <div className="flex justify-between items-center mb-6 border-b border-slate-700/60 pb-4">
+                <div className="flex items-center">
+                  <div className="bg-amber-500/10 p-2 rounded-lg border border-amber-500/20 mr-3">
+                    <FileCheck className="h-8 w-8 text-amber-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold text-base md:text-lg leading-tight">Inspection Test Record (ITR)</h3>
+                    <p className="text-slate-400 text-xs mt-0.5">Form No. ITR-EEHA-01</p>
+                  </div>
+                </div>
+                <span className="bg-green-500/20 text-green-400 text-xs font-black px-2.5 py-1 rounded-full border border-green-500/30 tracking-wider">COMPLIANT</span>
+              </div>
+              
+              <div className="space-y-4 text-sm">
+                <div className="grid grid-cols-2 gap-4 border-b border-slate-700/40 pb-3 text-xs">
+                  <div>
+                    <span className="text-slate-500 block uppercase font-bold tracking-wider">Equipment Tag</span>
+                    <span className="text-slate-300 font-mono font-semibold">45-EX-SKID-02</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block uppercase font-bold tracking-wider">Protection Type</span>
+                    <span className="text-slate-300 font-mono font-semibold">Ex d e [ia] IIC T4 Gb</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-slate-300 text-xs md:text-sm">
+                    <span className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" /> Flamepath Cleanliness & Gap Check</span>
+                    <span className="text-xs text-green-400 font-mono font-bold">PASS</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 text-xs md:text-sm">
+                    <span className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" /> Cable Entry IP Gland Integrity</span>
+                    <span className="text-xs text-green-400 font-mono font-bold">PASS</span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 text-xs md:text-sm">
+                    <span className="flex items-center"><CheckCircle2 className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" /> Equipment Earth Bonding (≤ 0.1Ω)</span>
+                    <span className="text-xs text-green-400 font-mono font-bold">0.03Ω</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-700/40 flex justify-between items-center text-xs text-slate-400 mt-4">
+                  <div>
+                    <p className="font-bold text-slate-300">ExMobilise WA Sign-off</p>
+                    <p className="font-mono text-[10px] text-amber-500">EEHA Subject Matter Expert</p>
+                  </div>
+                  <div className="h-14 w-14 border border-dashed border-amber-500/50 rounded-full flex items-center justify-center text-[9px] text-amber-500 font-extrabold rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 select-none">
+                    APPROVED
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Soft decorative golden glow behind the ITR Document */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-amber-500/10 blur-3xl rounded-full -z-0 pointer-events-none"></div>
           </div>
         </div>
       </section>
