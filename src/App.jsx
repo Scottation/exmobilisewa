@@ -342,7 +342,7 @@ export default function App() {
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
-              <p className="text-base font-bold text-slate-600 uppercase">ExMobilise WA <br />ABN: [INSERT YOUR ABN HERE]</p>
+              <p className="text-base font-bold text-slate-600 uppercase">ExMobilise WA <br />ABN: [52667400704]</p>
             </div>
           </div>
         </div>
