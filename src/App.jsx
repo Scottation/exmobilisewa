@@ -45,15 +45,15 @@ export default function App() {
   // 📸 YOUR SLIDESHOW PHOTOS GO HERE
   // ==========================================
   const kitPhotos = [
-    '/photos/kit (1).jpeg',
-    '/photos/kit (2).jpeg',
-    '/photos/kit (3).jpeg'
+    '/photos/kit (1).jpg',
+    '/photos/kit (2).jpg',
+    '/photos/kit (3).jpg'
   ];
 
   const docPhotos = [
-    '/photos/doc (1).jpeg',
-    '/photos/doc (2).jpeg',
-    '/photos/doc (3).jpeg'
+    '/photos/doc (1).jpg',
+    '/photos/doc (2).jpg',
+    '/photos/doc (3).jpg'
   ];
   // ==========================================
 
