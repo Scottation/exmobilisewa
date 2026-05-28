@@ -373,15 +373,14 @@ export default function App() {
       <footer className="bg-slate-900 py-12 text-slate-500 text-sm border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
-            {!mainLogoFailed ? (
+            {!mainLogoFailed && (
               <img 
                 src="/logo.png" 
                 alt="Ex Mobilise WA Logo" 
                 className="h-8 w-8 mr-3 object-contain grayscale opacity-70"
               />
-            ) : (
-              <span className="inline-block border-[2px] border-slate-500 text-slate-500 font-black italic text-xs px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
             )}
+            <span className="inline-block border-[2px] border-slate-500 text-slate-500 font-black italic text-xs px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
             <span className="text-lg font-bold text-slate-300 tracking-tight uppercase">Mobilise</span>
             <span className="ml-1.5 text-base font-light text-slate-500 lowercase tracking-widest">[wa]</span>
           </div>
