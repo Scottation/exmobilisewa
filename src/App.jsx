@@ -28,7 +28,7 @@ export default function App() {
 
   // List of partner/operator logos expected in the /public/logos/ directory
   const partnerLogos = [
-    { name: "AIR2WORK", path: "/logos/air2work.png" },
+    { name: "AIR2WORK", path: "/logos/air2work.svg" },
   ];
 
   const handleLogoError = (name) => {
