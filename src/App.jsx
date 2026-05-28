@@ -15,7 +15,10 @@ import {
   Hexagon,
   Phone,
   Award,
-  Users
+  Users,
+  Sliders,
+  Database,
+  HelpCircle
 } from 'lucide-react';
 
 export default function App() {
@@ -26,6 +29,16 @@ export default function App() {
   const [navLogoExt, setNavLogoExt] = useState('png');
   const [contactBTLogoExt, setContactBTLogoExt] = useState('png'); 
   const [footerLogoExt, setFooterLogoExt] = useState('png');
+
+  // Calculator States
+  const [selectedConcept, setSelectedConcept] = useState('db');
+  const [selectedGroup, setSelectedGroup] = useState('IIC');
+  const [selectedTemp, setSelectedTemp] = useState('T4');
+  const [selectedEpl, setSelectedEpl] = useState('Gb');
+  const [selectedIP1, setSelectedIP1] = useState('6');
+  const [selectedIP2, setSelectedIP2] = useState('6');
+  const [selectedBracket, setSelectedBracket] = useState('none');
+  const [selectedSuffix, setSelectedSuffix] = useState('none');
 
   const handleExtFallback = (currentExt, setExtFn, fallbackOrder) => {
     const currentIndex = fallbackOrder.indexOf(currentExt);
@@ -105,6 +118,55 @@ export default function App() {
     });
   };
 
+  // --- Calculator Dictionaries ---
+  const applyPreset = (preset) => {
+    switch (preset) {
+      case 'skid_jb':
+        setSelectedConcept('eb'); setSelectedGroup('IIC'); setSelectedTemp('T4'); setSelectedEpl('Gb'); setSelectedIP1('6'); setSelectedIP2('6'); setSelectedBracket('none'); setSelectedSuffix('none');
+        break;
+      case 'flameproof_motor':
+        setSelectedConcept('db'); setSelectedGroup('IIB'); setSelectedTemp('T4'); setSelectedEpl('Gb'); setSelectedIP1('5'); setSelectedIP2('5'); setSelectedBracket('none'); setSelectedSuffix('X');
+        break;
+      case 'is_instrument':
+        setSelectedConcept('ia'); setSelectedGroup('IIC'); setSelectedTemp('T6'); setSelectedEpl('Ga'); setSelectedIP1('6'); setSelectedIP2('6'); setSelectedBracket('ia'); setSelectedSuffix('none');
+        break;
+      default: break;
+    }
+  };
+
+  const conceptsDict = {
+    'db': { title: 'Flameproof', desc: 'Contains internal explosion, prevents propagation. Gap integrity critical.' },
+    'eb': { title: 'Increased Safety', desc: 'No arcs/sparks in normal operation. Terminal torque & IP rating critical.' },
+    'ia': { title: 'Intrinsic Safety (Ga)', desc: 'Energy limited (safe with 2 faults). Requires appropriate barrier.' },
+    'ib': { title: 'Intrinsic Safety (Gb)', desc: 'Energy limited (safe with 1 fault). Zone 1 applications.' },
+    'ic': { title: 'Intrinsic Safety (Gc)', desc: 'Energy limited (normal operation). Zone 2 applications.' },
+    'pxb': { title: 'Pressurised', desc: 'Maintains internal overpressure to exclude flammable gas.' },
+    'ma': { title: 'Encapsulation', desc: 'Ignition sources sealed entirely in resin compound.' }
+  };
+  const groupsDict = {
+    'I': { type: 'Mining', detail: 'Firedamp/Coal Dust. Highest severity.' },
+    'IIA': { type: 'Gas IIA', detail: 'Propane group. Moderate MESG.' },
+    'IIB': { type: 'Gas IIB', detail: 'Ethylene group. Common offshore standard.' },
+    'IIC': { type: 'Gas IIC', detail: 'Hydrogen/Acetylene. Strictest gap tolerances.' },
+    'IIIA': { type: 'Combustible Flyings', detail: 'Fibers/flyings.' },
+    'IIIB': { type: 'Non-conductive Dust', detail: 'Requires strict IP5X minimum.' },
+    'IIIC': { type: 'Conductive Dust', detail: 'Requires strict IP6X dust-tight.' }
+  };
+  const tempsDict = {
+    'T1': 'Max 450°C (Methane/Ammonia)', 'T2': 'Max 300°C (Propane/Ethanol)',
+    'T3': 'Max 200°C (Petrol/Jet-A1)', 'T4': 'Max 135°C (Standard Offshore)',
+    'T5': 'Max 100°C', 'T6': 'Max 85°C (Carbon Disulphide)'
+  };
+  const eplsDict = {
+    'Ga / Da': 'Zone 0 / 20 (Continuous exposure)', 'Gb / Db': 'Zone 1 / 21 (Intermittent exposure)', 'Gc / Dc': 'Zone 2 / 22 (Infrequent exposure)'
+  };
+  const ipSolids = {
+    '0': 'None', '1': '>50mm', '2': '>12.5mm (Fingers)', '3': '>2.5mm (Tools)', '4': '>1.0mm (Wire)', '5': 'Dust Protected', '6': 'Dust Tight'
+  };
+  const ipWater = {
+    '0': 'None', '1': 'Vertical Drips', '2': '15° Angled Drips', '3': 'Spraying Water', '4': 'Splashing Water', '5': 'Water Jets (6.3mm)', '6': 'Powerful Jets (Deck Wash)', '7': 'Immersion (1m/30min)', '8': 'Continuous Immersion', '9': 'High Pressure/Steam'
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-500 selection:text-slate-900">
       
@@ -123,6 +185,7 @@ export default function App() {
             <div className="hidden md:flex space-x-8 items-center text-slate-300">
               <button onClick={() => scrollToSection('services')} className="hover:text-amber-400 font-medium transition-colors">Services</button>
               <button onClick={() => scrollToSection('about')} className="hover:text-amber-400 font-medium transition-colors">About</button>
+              <button onClick={() => scrollToSection('calculator')} className="hover:text-amber-400 font-medium transition-colors text-amber-500 flex items-center"><Sliders className="h-4 w-4 mr-1.5"/> Ex Decoder</button>
               <button onClick={() => scrollToSection('contact')} className="bg-amber-500 text-slate-900 px-6 py-2.5 rounded-md font-bold transition-all shadow-lg hover:bg-amber-400">Book Inspection</button>
             </div>
             <div className="md:hidden flex items-center">
@@ -260,7 +323,7 @@ export default function App() {
               <p className="text-xl text-amber-500 font-bold mb-6 italic">"Integrity isn't just about the equipment; it's about the sign-off."</p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  With a strong foundation across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms. While headquartered in Western Australia, my services are available nationwide for worthwhile project scopes.
+                  With a strong foundation across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms. While headquartered in Western Australia, my services are available nationwide for interstate projects.
                 </p>
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
@@ -280,6 +343,167 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- OFFLINE COMPACT CALCULATOR --- */}
+      <section id="calculator" className="py-20 bg-slate-100 border-t-4 border-amber-500">
+        <div className="max-w-5xl mx-auto px-4">
+          
+          <div className="mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-black uppercase text-slate-900 flex items-center justify-center md:justify-start">
+                <Database className="h-6 w-6 mr-2 text-amber-500" /> Ex Rating Builder
+              </h2>
+              <p className="text-sm text-slate-500 font-bold mt-1">AS/NZS 60079 & AS 60529 Reference Matrix</p>
+            </div>
+            
+            {/* Presets */}
+            <div className="flex gap-2">
+              <button onClick={() => applyPreset('skid_jb')} className="px-3 py-1.5 bg-white border border-slate-300 hover:border-amber-500 rounded text-xs font-bold text-slate-600 transition-colors">Ex e Skid Box</button>
+              <button onClick={() => applyPreset('flameproof_motor')} className="px-3 py-1.5 bg-white border border-slate-300 hover:border-amber-500 rounded text-xs font-bold text-slate-600 transition-colors">Ex d Motor</button>
+              <button onClick={() => applyPreset('is_instrument')} className="px-3 py-1.5 bg-white border border-slate-300 hover:border-amber-500 rounded text-xs font-bold text-slate-600 transition-colors">IS Loop [ia]</button>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+            
+            {/* Input Grid (Compact 4-column) */}
+            <div className="p-6 bg-slate-50 border-b border-slate-200">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Concept</label>
+                  <select value={selectedConcept} onChange={(e)=>setSelectedConcept(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-amber-600 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(conceptsDict).map(k => <option key={k} value={k}>Ex {k}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Group</label>
+                  <select value={selectedGroup} onChange={(e)=>setSelectedGroup(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-slate-700 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(groupsDict).map(k => <option key={k} value={k}>{k}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Temp Class</label>
+                  <select value={selectedTemp} onChange={(e)=>setSelectedTemp(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-slate-700 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(tempsDict).map(k => <option key={k} value={k}>{k}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">EPL</label>
+                  <select value={selectedEpl} onChange={(e)=>setSelectedEpl(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-slate-700 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(eplsDict).map(k => <option key={k} value={k.split(' / ')[0]}>{k}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">IP (Solids/Dust)</label>
+                  <select value={selectedIP1} onChange={(e)=>setSelectedIP1(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-blue-600 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(ipSolids).map(k => <option key={k} value={k}>IP {k}x</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">IP (Water)</label>
+                  <select value={selectedIP2} onChange={(e)=>setSelectedIP2(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-blue-600 outline-none focus:border-amber-500 cursor-pointer">
+                    {Object.keys(ipWater).map(k => <option key={k} value={k}>IP x{k}</option>)}
+                  </select>
+                </div>
+
+                {/* Placed at end of string logic, but kept in input grid here */}
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Associated Equip [ ]</label>
+                  <select value={selectedBracket} onChange={(e)=>setSelectedBracket(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-slate-700 outline-none focus:border-amber-500 cursor-pointer">
+                    <option value="none">None</option>
+                    <option value="ia">[ia]</option>
+                    <option value="ib">[ib]</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">Cert Suffix</label>
+                  <select value={selectedSuffix} onChange={(e)=>setSelectedSuffix(e.target.value)} className="w-full bg-white border border-slate-300 p-2 rounded text-sm font-bold text-red-600 outline-none focus:border-amber-500 cursor-pointer">
+                    <option value="none">None</option>
+                    <option value="X">X (Conditions Apply)</option>
+                    <option value="U">U (Component)</option>
+                  </select>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Live Nameplate Display */}
+            <div className="bg-slate-900 p-6 text-center border-b-4 border-amber-500">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Compiled Nameplate String</p>
+              <div className="text-2xl md:text-4xl font-mono font-black text-white flex flex-wrap justify-center gap-2">
+                <span>Ex</span>
+                <span className="text-amber-500">{selectedConcept}</span>
+                <span>{selectedGroup}</span>
+                <span className="text-amber-600">{selectedTemp}</span>
+                <span className="text-slate-300">{selectedEpl}</span>
+                <span className="text-blue-400">IP{selectedIP1}{selectedIP2}</span>
+                {/* Associated equip mapped at the end of the main string */}
+                {selectedBracket !== 'none' && <span className="text-purple-400">[{selectedBracket}]</span>}
+                {selectedSuffix !== 'none' && <span className="text-red-500">{selectedSuffix}</span>}
+              </div>
+            </div>
+
+            {/* Definitions Output Grid */}
+            <div className="p-6 bg-white">
+              <div className="grid md:grid-cols-3 gap-6">
+                
+                <div>
+                  <p className="text-xs font-black text-amber-500 uppercase tracking-widest mb-1">Protection (Ex {selectedConcept})</p>
+                  <p className="font-bold text-slate-800 text-sm">{conceptsDict[selectedConcept].title}</p>
+                  <p className="text-xs text-slate-600 mt-1">{conceptsDict[selectedConcept].desc}</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Group ({selectedGroup})</p>
+                  <p className="font-bold text-slate-800 text-sm">{groupsDict[selectedGroup].type}</p>
+                  <p className="text-xs text-slate-600 mt-1">{groupsDict[selectedGroup].detail}</p>
+                  
+                  {/* Dust Conflict Warning */}
+                  {selectedGroup === 'IIIC' && selectedIP1 !== '6' && (
+                    <p className="text-[10px] font-bold text-red-600 bg-red-50 p-1.5 rounded mt-2 border border-red-200">
+                      Warning: Group IIIC requires IP6x minimum.
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <p className="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">Temp & Zone</p>
+                  <p className="font-bold text-slate-800 text-sm">{tempsDict[selectedTemp]}</p>
+                  <p className="text-xs text-slate-600 mt-1">{eplsDict[`${selectedEpl} / D${selectedEpl.charAt(1)}`] || `Zone placement: ${selectedEpl}`}</p>
+                </div>
+
+                <div className="md:col-span-3 pt-4 border-t border-slate-100 flex flex-col md:flex-row gap-6">
+                  <div className="flex-1">
+                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">IP{selectedIP1} (Solids)</p>
+                    <p className="text-xs text-slate-600 font-medium">{ipSolids[selectedIP1]}</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">IP{selectedIP2} (Liquids)</p>
+                    <p className="text-xs text-slate-600 font-medium">{ipWater[selectedIP2]}</p>
+                  </div>
+                  {selectedSuffix !== 'none' && (
+                    <div className="flex-1 bg-red-50 border border-red-200 p-2 rounded">
+                      <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-1">Suffix ({selectedSuffix})</p>
+                      <p className="text-xs text-red-800 font-medium">
+                        {selectedSuffix === 'X' ? 'Specific Conditions of Use apply. Check certificate.' : 'Incomplete Component. Cannot be used alone.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
