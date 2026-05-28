@@ -126,7 +126,9 @@ export default function App() {
           <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="hexagons" width="50" height="86.6" patternUnits="userSpaceOnUse" patternTransform="scale(0.8)">
-                <path d="M 25 -0.5 L 44 10.5 L 44 32.5 L 25 43.5 L 6 32.5 L 6 10.5 Z" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+                <path d="M 25 0 L 50 14.43 L 50 43.3 L 25 57.73 L 0 43.3 L 0 14.43 Z" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+                <path d="M 0 43.3 L 25 57.73 L 25 86.6 L 0 101.03 L -25 86.6 L -25 57.73 Z" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
+                <path d="M 50 43.3 L 75 57.73 L 75 86.6 L 50 101.03 L 25 86.6 L 25 57.73 Z" fill="none" stroke="#f59e0b" strokeWidth="1.5" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#hexagons)" />
