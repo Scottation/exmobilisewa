@@ -15,12 +15,23 @@ import {
   Hexagon,
   Phone,
   Award,
-  Users
+  Users,
+  Database,
+  Sliders,
+  HelpCircle
 } from 'lucide-react';
 
 export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
+
+  // Interactive Reference Calculator States
+  const [selectedConcept, setSelectedConcept] = useState('db');
+  const [selectedGroup, setSelectedGroup] = useState('IIC');
+  const [selectedTemp, setSelectedTemp] = useState('T4');
+  const [selectedEpl, setSelectedEpl] = useState('Gb');
+  const [selectedBracket, setSelectedBracket] = useState('none');
+  const [selectedSuffix, setSelectedSuffix] = useState('none');
 
   // Fallback states for main logos
   const [navLogoExt, setNavLogoExt] = useState('png');
@@ -105,6 +116,94 @@ export default function App() {
     });
   };
 
+  // Preset Configurations for Ex Ratings
+  const applyPreset = (preset) => {
+    switch (preset) {
+      case 'skid_jb':
+        setSelectedConcept('eb');
+        setSelectedGroup('IIC');
+        setSelectedTemp('T4');
+        setSelectedEpl('Gb');
+        setSelectedBracket('none');
+        setSelectedSuffix('none');
+        break;
+      case 'flameproof_motor':
+        setSelectedConcept('db');
+        setSelectedGroup('IIB');
+        setSelectedTemp('T4');
+        setSelectedEpl('Gb');
+        setSelectedBracket('none');
+        setSelectedSuffix('X');
+        break;
+      case 'is_instrument':
+        setSelectedConcept('ia');
+        setSelectedGroup('IIC');
+        setSelectedTemp('T6');
+        setSelectedEpl('Ga');
+        setSelectedBracket('ia');
+        setSelectedSuffix('none');
+        break;
+      case 'purged_panel':
+        setSelectedConcept('pxb');
+        setSelectedGroup('IIC');
+        setSelectedTemp('T3');
+        setSelectedEpl('Gb');
+        setSelectedBracket('none');
+        setSelectedSuffix('U');
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Reference dictionaries based on AS/NZS 60079 parameters
+  const conceptsDict = {
+    'db': { standard: 'AS/NZS 60079.1', title: 'Flameproof Enclosure', desc: 'Designed to contain an internal gas explosion and prevent it from propagating to the external hazardous atmosphere. Flamepaths must be clear and gap checked.' },
+    'eb': { standard: 'AS/NZS 60079.7', title: 'Increased Safety', desc: 'Adds additional security against the possibility of excessive temperatures, arcs, or sparks. Wiring terminals must be secure and vibration-resistant.' },
+    'ia': { standard: 'AS/NZS 60079.11', title: 'Intrinsic Safety (Two Faults)', desc: 'Limits electrical energy (voltage, current, capacitance) in the circuit to levels incapable of causing ignition by sparking or thermal effects.' },
+    'ib': { standard: 'AS/NZS 60079.11', title: 'Intrinsic Safety (Single Fault)', desc: 'Provides intrinsic safety protection with one active fault condition. Safe for Zone 1 applications.' },
+    'ic': { standard: 'AS/NZS 60079.11', title: 'Intrinsic Safety (Normal Operation)', desc: 'Intrinsic safety level of protection suitable for Zone 2 applications. Limits energy under normal working conditions.' },
+    'pxb': { standard: 'AS/NZS 60079.2', title: 'Pressurised Enclosure (Zone 1)', desc: 'Enclosure kept under positive pressure with protective gas (air or nitrogen) to exclude external flammable gases.' },
+    'ma': { standard: 'AS/NZS 60079.18', title: 'Encapsulation (Zone 0)', desc: 'Parts that can ignite an explosive atmosphere are fully enclosed in resin to exclude the gas or dust mixture.' }
+  };
+
+  const groupsDict = {
+    'I': { type: 'Mining (Methane)', detail: 'Underground coal mining applications. Zero tolerance for coal dust and firedamp risks.' },
+    'IIA': { type: 'Gas Group IIA (Propane)', detail: 'Typical representative gas is Propane. High maximum experimental safe gap (MESG > 0.9mm). Least easily ignited gases.' },
+    'IIB': { type: 'Gas Group IIB (Ethylene)', detail: 'Typical representative gas is Ethylene. Moderate safe gap (0.5mm ≤ MESG ≤ 0.9mm). Essential for general offshore applications.' },
+    'IIC': { type: 'Gas Group IIC (Hydrogen / Acetylene)', detail: 'Typical representative gases are Hydrogen and Acetylene. Extremely narrow safe gap (MESG < 0.5mm). Most easily ignited gas category.' },
+    'IIIA': { type: 'Combustible Flyings', detail: 'Solid particles including fibers and combustible flyings exceeding 500 microns.' },
+    'IIIB': { type: 'Non-conductive Dust', detail: 'Non-conductive solid particles capable of causing thermal ignition or dust explosions.' },
+    'IIIC': { type: 'Conductive Dust', detail: 'Highly hazardous conductive solid particles. Strict IP protection (minimum IP6X) is mandatory.' }
+  };
+
+  const tempsDict = {
+    'T1': { maxTemp: '450°C', autoIgnition: 'Gases with auto-ignition temp > 450°C (e.g., Methane, Ammonia)' },
+    'T2': { maxTemp: '300°C', autoIgnition: 'Gases with auto-ignition temp > 300°C (e.g., Propane, Ethanol)' },
+    'T3': { maxTemp: '200°C', autoIgnition: 'Gases with auto-ignition temp > 200°C (e.g., Petrol, Jet-A1)' },
+    'T4': { maxTemp: '135°C', autoIgnition: 'Gases with auto-ignition temp > 135°C (e.g., Acetaldehyde). The offshore benchmark standard.' },
+    'T5': { maxTemp: '100°C', autoIgnition: 'Gases with auto-ignition temp > 100°C. Very restrictive thermal margin.' },
+    'T6': { maxTemp: '85°C', autoIgnition: 'Gases with auto-ignition temp > 85°C (e.g., Carbon Disulphide). Highly sensitive environments.' }
+  };
+
+  const eplsDict = {
+    'Ga': { zone: 'Zone 0 / Zone 20', risk: 'Very high protection. Safe under normal operation, expected faults, and rare faults. Continuous exposure.' },
+    'Gb': { zone: 'Zone 1 / Zone 21', risk: 'High protection. Safe during normal operation and expected disturbances or faults.' },
+    'Gc': { zone: 'Zone 2 / Zone 22', risk: 'Enhanced protection. Safe during normal operation. Gas/Dust is only present infrequently or briefly.' }
+  };
+
+  const bracketsDict = {
+    'none': { title: 'Direct Installation', desc: 'The entire apparatus is certified to be located directly inside the designated hazardous area.' },
+    'ia': { title: 'Associated Apparatus [ia]', desc: 'Usually barriers or isolators situated in the safe area, terminating with intrinsically safe signals extending into Zone 0.' },
+    'ib': { title: 'Associated Apparatus [ib]', desc: 'Galvanic isolators in the safe area terminating with intrinsically safe signals extending into Zone 1.' }
+  };
+
+  const suffixesDict = {
+    'none': { title: 'Standard Certificate', desc: 'Standard Ex certificate with no special operating restrictions beyond standard installation guidelines.' },
+    'X': { title: 'Suffix "X" (Specific Conditions of Use)', desc: 'Highly Critical for Mobilisation. Equipment has special conditions of use (detailed in Certificate schedule). Missing these is an automatic fail.' },
+    'U': { title: 'Suffix "U" (Ex Component)', desc: 'Incomplete Certification. This item is an Ex Component (e.g. an empty enclosure or empty switch) and must not be operated without complete system certification.' }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-500 selection:text-slate-900">
       
@@ -123,6 +222,7 @@ export default function App() {
             <div className="hidden md:flex space-x-8 items-center text-slate-300">
               <button onClick={() => scrollToSection('services')} className="hover:text-amber-400 font-medium transition-colors">Services</button>
               <button onClick={() => scrollToSection('about')} className="hover:text-amber-400 font-medium transition-colors">About</button>
+              <button onClick={() => scrollToSection('calculator')} className="hover:text-amber-400 font-medium transition-colors">Ex Decipher Tool</button>
               <button onClick={() => scrollToSection('contact')} className="bg-amber-500 text-slate-900 px-6 py-2.5 rounded-md font-bold transition-all shadow-lg hover:bg-amber-400">Book Inspection</button>
             </div>
             <div className="md:hidden flex items-center">
@@ -284,6 +384,215 @@ export default function App() {
         </div>
       </section>
 
+      {/* --- EX REFERENCE DECODER TOOL (Completely Offline & No API Key Required) --- */}
+      <section id="calculator" className="py-24 bg-slate-900 text-white relative overflow-hidden border-t border-amber-500">
+        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500 via-slate-900 to-slate-900"></div>
+        <div className="max-w-6xl mx-auto px-4 relative z-10">
+          
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
+              <Sliders className="h-4 w-4 text-amber-500" />
+              <span className="text-xs font-bold text-amber-500 tracking-widest uppercase">Interactive SME Tool</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black uppercase mb-4">AS/NZS 60079 Reference Decoder</h2>
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto">Build an Ex protection rating below to instantly see the engineering requirements, protection rules, and verification criteria per Australian Standards.</p>
+            
+            {/* Presets Row */}
+            <div className="flex flex-wrap justify-center gap-3 mt-8">
+              <span className="text-xs font-bold text-slate-500 uppercase flex items-center mr-2">Quick Presets:</span>
+              <button onClick={() => applyPreset('skid_jb')} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-lg text-xs font-bold text-slate-300 transition-all">Increased Safety Skid Box</button>
+              <button onClick={() => applyPreset('flameproof_motor')} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-lg text-xs font-bold text-slate-300 transition-all">Flameproof Motor (Suffix X)</button>
+              <button onClick={() => applyPreset('is_instrument')} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-lg text-xs font-bold text-slate-300 transition-all">Intrinsically Safe Loop</button>
+              <button onClick={() => applyPreset('purged_panel')} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-lg text-xs font-bold text-slate-300 transition-all">Zone 1 Purged Panel</button>
+            </div>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8 items-start">
+            
+            {/* LEFT COLUMN: Input Matrix Form (5 Cols) */}
+            <div className="lg:col-span-5 bg-slate-800 rounded-2xl border border-slate-700 p-6 md:p-8 space-y-6 shadow-xl">
+              <h3 className="text-lg font-black uppercase tracking-wider text-amber-500 border-b border-slate-700 pb-3 flex items-center">
+                <Database className="mr-2.5 h-5 w-5 text-amber-500 animate-pulse" /> Rating Parameters
+              </h3>
+              
+              {/* Field 1: Associated Apparatus Brackets */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+                  <span>Associated Apparatus [ ]</span>
+                  <HelpCircle className="h-3.5 w-3.5 text-slate-500 hover:text-amber-500 cursor-pointer" />
+                </label>
+                <select 
+                  value={selectedBracket}
+                  onChange={(e) => setSelectedBracket(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all"
+                >
+                  <option value="none">Direct Installation (No Brackets)</option>
+                  <option value="ia">[ia] - Ex ia Barrier Safe-Area Limit</option>
+                  <option value="ib">[ib] - Ex ib Barrier Safe-Area Limit</option>
+                </select>
+              </div>
+
+              {/* Field 2: Protection Concept */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Protection Concept (Ex ...)</label>
+                <select 
+                  value={selectedConcept}
+                  onChange={(e) => setSelectedConcept(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all text-amber-400"
+                >
+                  <option value="db">db - Flameproof Enclosure</option>
+                  <option value="eb">eb - Increased Safety</option>
+                  <option value="ia">ia - Intrinsic Safety (2 faults)</option>
+                  <option value="ib">ib - Intrinsic Safety (1 fault)</option>
+                  <option value="ic">ic - Intrinsic Safety (normal)</option>
+                  <option value="pxb">pxb - Pressurised Enclosure</option>
+                  <option value="ma">ma - Resin Encapsulation</option>
+                </select>
+              </div>
+
+              {/* Field 3: Gas / Dust Group */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Gas or Dust Group</label>
+                <select 
+                  value={selectedGroup}
+                  onChange={(e) => setSelectedGroup(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all"
+                >
+                  <option value="I">Group I - Mining Methane</option>
+                  <option value="IIA">Group IIA - Propane Gases</option>
+                  <option value="IIB">Group IIB - Ethylene Gases</option>
+                  <option value="IIC">Group IIC - Hydrogen / Acetylene</option>
+                  <option value="IIIA">Group IIIA - Combustible Flyings</option>
+                  <option value="IIIB">Group IIIB - Non-conductive Dusts</option>
+                  <option value="IIIC">Group IIIC - Conductive Dusts</option>
+                </select>
+              </div>
+
+              {/* Field 4: Temperature Class */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Temperature Class (T-Class)</label>
+                <select 
+                  value={selectedTemp}
+                  onChange={(e) => setSelectedTemp(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all text-amber-500"
+                >
+                  <option value="T1">T1 - Max 450°C</option>
+                  <option value="T2">T2 - Max 300°C</option>
+                  <option value="T3">T3 - Max 200°C</option>
+                  <option value="T4">T4 - Max 135°C (Standard Offshore)</option>
+                  <option value="T5">T5 - Max 100°C</option>
+                  <option value="T6">T6 - Max 85°C (Highly Critical)</option>
+                </select>
+              </div>
+
+              {/* Field 5: EPL */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Equipment Protection Level (EPL)</label>
+                <select 
+                  value={selectedEpl}
+                  onChange={(e) => setSelectedEpl(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all"
+                >
+                  <option value="Ga">Ga - Continuous Exposure (Zone 0)</option>
+                  <option value="Gb">Gb - Intermittent Exposure (Zone 1)</option>
+                  <option value="Gc">Gc - Infrequent Exposure (Zone 2)</option>
+                </select>
+              </div>
+
+              {/* Field 6: Certificate Suffix */}
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Certificate Suffix (X or U)</label>
+                <select 
+                  value={selectedSuffix}
+                  onChange={(e) => setSelectedSuffix(e.target.value)}
+                  className="w-full bg-slate-900 border-2 border-slate-700 focus:border-amber-500 rounded-xl px-4 py-3 font-mono font-bold text-sm outline-none transition-all"
+                >
+                  <option value="none">Standard Component (No suffix)</option>
+                  <option value="X">X - Specific Conditions for Safe Use</option>
+                  <option value="U">U - Ex Component (Incomplete Certification)</option>
+                </select>
+              </div>
+
+            </div>
+
+            {/* RIGHT COLUMN: Interactive Dashboard Output (7 Cols) */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Generated Nameplate Preview */}
+              <div className="bg-slate-950 rounded-2xl border-2 border-amber-500 p-6 md:p-8 relative overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 bg-amber-500/10 border-l border-b border-amber-500/20 text-amber-500 font-mono text-[9px] font-black px-4 py-1.5 uppercase tracking-widest">
+                  Live Terminal Code
+                </div>
+                
+                <h4 className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-3">Compiled Nameplate String</h4>
+                
+                {/* Large Text Output */}
+                <div className="text-3xl md:text-5xl font-mono font-extrabold tracking-tight flex flex-wrap items-center gap-1 mt-4">
+                  {selectedBracket !== 'none' && <span className="text-blue-400">[{selectedBracket === 'ia' ? 'Ex ia' : 'Ex ib'}] </span>}
+                  <span className="text-white">Ex</span>
+                  <span className="text-amber-500"> {selectedConcept}</span>
+                  <span className="text-slate-300"> {selectedGroup}</span>
+                  <span className="text-amber-600"> {selectedTemp}</span>
+                  <span className="text-slate-400"> {selectedEpl}</span>
+                  {selectedSuffix !== 'none' && <span className="text-red-500 font-black ml-1 animate-pulse">{selectedSuffix}</span>}
+                </div>
+              </div>
+
+              {/* Parameter Breakdown Details Panel */}
+              <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 md:p-8 space-y-6 shadow-xl">
+                <h4 className="text-slate-400 font-black uppercase tracking-widest text-xs border-b border-slate-700 pb-3 flex items-center">
+                  <Database className="mr-2 h-4 w-4 text-amber-500" /> Decoded Matrix Definitions (AS/NZS 60079)
+                </h4>
+
+                <div className="grid sm:grid-cols-2 gap-6 text-sm">
+                  {/* Concept Definition */}
+                  <div className="space-y-1">
+                    <span className="text-xs font-black text-amber-500 uppercase tracking-wider block">Protection (Ex {selectedConcept})</span>
+                    <p className="font-bold text-white text-base leading-tight">{conceptsDict[selectedConcept].title}</p>
+                    <p className="text-xs text-slate-500 font-mono">{conceptsDict[selectedConcept].standard}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mt-1">{conceptsDict[selectedConcept].desc}</p>
+                  </div>
+
+                  {/* Gas Group Definition */}
+                  <div className="space-y-1">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">Environment ({selectedGroup})</span>
+                    <p className="font-bold text-white text-base leading-tight">{groupsDict[selectedGroup].type}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mt-1">{groupsDict[selectedGroup].detail}</p>
+                  </div>
+
+                  {/* Temp Class Definition */}
+                  <div className="space-y-1 pt-4 border-t border-slate-700/60">
+                    <span className="text-xs font-black text-amber-600 uppercase tracking-wider block">T-Class Limit ({selectedTemp})</span>
+                    <p className="font-bold text-white text-base leading-tight">Maximum Temp: {tempsDict[selectedTemp].maxTemp}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mt-1">{tempsDict[selectedTemp].autoIgnition}</p>
+                  </div>
+
+                  {/* EPL Level Definition */}
+                  <div className="space-y-1 pt-4 border-t border-slate-700/60">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-wider block">Zone Placement ({selectedEpl})</span>
+                    <p className="font-bold text-white text-base leading-tight">Suited for {eplsDict[selectedEpl].zone}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mt-1">{eplsDict[selectedEpl].risk}</p>
+                  </div>
+                </div>
+
+                {/* Suffix / Special parameters warn block if selected */}
+                {selectedSuffix !== 'none' && (
+                  <div className={`p-4 rounded-xl border flex gap-3 items-start ${selectedSuffix === 'X' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`}>
+                    <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5 animate-bounce" />
+                    <div>
+                      <p className="font-bold text-sm uppercase tracking-wide">{suffixesDict[selectedSuffix].title}</p>
+                      <p className="text-xs leading-relaxed mt-1 opacity-90">{suffixesDict[selectedSuffix].desc}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* --- FIELD READINESS SLIDESHOWS --- */}
       <section className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4">
@@ -357,6 +666,7 @@ export default function App() {
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
+              {/* Stacked Flex container for cleaner layout */}
               <div className="flex flex-col items-center md:items-start gap-4 border-l-4 border-amber-500 bg-slate-50 p-6 shadow-md rounded-r-xl w-fit mx-auto md:mx-0">
                 <div className="flex-shrink-0">
                   <img 
