@@ -33,10 +33,6 @@ export default function App() {
   // ==========================================
   // 📸 YOUR SLIDESHOW PHOTOS GO HERE
   // ==========================================
-  // You can name your files whatever you want in GitHub! 
-  // Just type the exact file names into these lists below.
-  // Make sure they are wrapped in quotes and separated by commas.
-  
   const kitPhotos = [
     '/photos/kit (1).jpg',
     '/photos/kit (2).jpg',
@@ -48,7 +44,6 @@ export default function App() {
     '/photos/doc (2).jpg',
     '/photos/doc (3).jpg'
   ];
-
   // ==========================================
 
   const [currentKitIdx, setCurrentKitIdx] = useState(0);
@@ -348,7 +343,7 @@ export default function App() {
               <p className="text-xl text-amber-500 font-bold mb-6 italic">"Integrity isn't just about the equipment; it's about the sign-off."</p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  With a strong foundation across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms. While headquartered in Western Australia, my services are available nationwide for interstate projects.
+                  With a strong foundation across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms. While headquartered in Western Australia, my services are available nationwide for worthwhile project scopes.
                 </p>
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
@@ -476,7 +471,10 @@ export default function App() {
                 {!mainLogoFailed && (
                   <img src={`/logo.${mainLogoExt}`} alt="Ex Mobilise WA Logo" onError={handleMainLogoError} className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
                 )}
-                <p className="text-base font-bold text-slate-600 uppercase">Ex Mobilise WA <br />ABN: [52667400704]</p>
+                <p className="text-base font-bold text-slate-600 uppercase">
+                  Ex Mobilise WA <br />
+                  <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
+                </p>
               </div>
             </div>
           </div>
@@ -499,8 +497,15 @@ export default function App() {
             <span className="text-lg font-bold text-slate-300 tracking-tight uppercase">Mobilise</span>
             <span className="ml-1.5 text-base font-light text-slate-500 tracking-widest">[WA]</span>
           </div>
+          
           <p className="font-bold text-slate-400 mb-2 uppercase tracking-widest"> &copy; {new Date().getFullYear()} All Rights Reserved</p>
-          <p>Lead inspection and HAVD services for the Australian and international energy sectors.</p>
+          <p className="mb-4">Lead inspection and HAVD services for the Australian and international energy sectors.</p>
+          
+          <div className="flex items-center justify-center space-x-3 text-xs font-black text-slate-500 uppercase tracking-widest">
+            <span>ABN: 52 667 400 704</span>
+            <span className="w-1.5 h-1.5 bg-amber-500/50 rounded-full"></span>
+            <span>EC: 15735</span>
+          </div>
         </div>
       </footer>
     </div>
