@@ -584,9 +584,9 @@ export default function App() {
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
-              {/* New Flex container for cleaner layout (Removed doubling business name) */}
-              <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-6 border-l-4 border-amber-500 bg-slate-50 p-6 shadow-md rounded-r-xl">
-                {/* LEFT SIDE: Large logobt.png (increased 10%+ from md:h-20 to md:h-24 for prominent display) */}
+              {/* Stacked Flex container for cleaner layout */}
+              <div className="flex flex-col items-center md:items-start gap-4 border-l-4 border-amber-500 bg-slate-50 p-6 shadow-md rounded-r-xl w-fit mx-auto md:mx-0">
+                {/* TOP: Large logobt.png */}
                 <div className="flex-shrink-0">
                   <img 
                     src={`/logobt.${contactBTLogoExt}`} 
@@ -596,13 +596,11 @@ export default function App() {
                   />
                 </div>
                 
-                {/* RIGHT SIDE: ABN & EC Details (Stylized Gray Block for Tier-1 feel) */}
-                <div className="text-left flex-grow">
-                  <div className="p-4 bg-slate-100 rounded-lg border border-slate-200">
-                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5">Compliance</p>
-                    <p className="text-sm font-bold text-slate-600 uppercase">ABN: 52 667 400 704</p>
-                    <p className="text-sm font-bold text-slate-600 uppercase mt-0.5">EC: 15735</p>
-                  </div>
+                {/* BOTTOM: ABN & EC Details */}
+                <div className="w-full mt-2 p-4 bg-slate-100 rounded-lg border border-slate-200 text-center md:text-left">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5">Compliance</p>
+                  <p className="text-sm font-bold text-slate-600 uppercase">ABN: 52 667 400 704</p>
+                  <p className="text-sm font-bold text-slate-600 uppercase mt-0.5">EC: 15735</p>
                 </div>
               </div>
             </div>
