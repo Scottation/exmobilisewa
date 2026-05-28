@@ -28,7 +28,7 @@ export default function App() {
 
   // List of partner/operator logos expected in the /public/logos/ directory
   const partnerLogos = [
-    { name: "AIR2WORK", path: "/logos/air2work.svg" },
+    { name: "AIR2WORK", path: "/logos/air2work.png" },
   ];
 
   const handleLogoError = (name) => {
@@ -82,7 +82,7 @@ export default function App() {
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               {!mainLogoFailed ? (
                 <img 
-                  src="/logo.png" 
+                  src="/logo.svg" 
                   alt="Ex Mobilise WA Logo" 
                   className="h-10 w-10 mr-3 object-contain drop-shadow-md"
                   onError={() => setMainLogoFailed(true)}
@@ -290,7 +290,7 @@ export default function App() {
               <p className="text-xl text-amber-500 font-bold mb-6 italic">"Integrity isn't just about the equipment; it's about the sign-off."</p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  With extensive experience across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms.
+                  With a strong foundation across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms. While headquartered in Western Australia, my services are available nationwide for worthwhile project scopes.
                 </p>
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
@@ -345,7 +345,7 @@ export default function App() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black uppercase mb-4">Book Your Inspection</h2>
-            <p className="text-xl text-slate-600">Response time usually within 2 hours for WA business day enquiries.</p>
+            <p className="text-xl text-slate-600">Response time usually within 2 hours (AWST business hours).</p>
           </div>
 
           <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-8 md:p-12 shadow-2xl">
@@ -375,9 +375,9 @@ export default function App() {
           
           <div className="mt-16 grid md:grid-cols-2 gap-8 text-center md:text-left">
             <div>
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Operations</p>
-              <p className="text-base font-bold text-slate-600 uppercase">Perth, Western Australia</p>
-              <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto md:mx-0">Available for metro yard inspections (Supported by Air2Work facilities) and regional site deployments.</p>
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Operations & Deployment</p>
+              <p className="text-base font-bold text-slate-600 uppercase">Perth Headquartered — Nationwide Availability</p>
+              <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto md:mx-0">Available for local metro yard inspections (supported by Air2Work facilities) and mobilization to sites across Australia.</p>
               
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 mt-6">Direct Contact</p>
               <a href="mailto:inspections@exmobilisewa.com.au" className="block text-xl font-black hover:text-amber-500 transition-colors">inspections@exmobilisewa.com.au</a>
@@ -387,7 +387,7 @@ export default function App() {
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
                 {!mainLogoFailed && (
-                  <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
+                  <img src="/logo.svg" alt="Ex Mobilise WA Logo" className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
                 )}
                 <p className="text-base font-bold text-slate-600 uppercase">Ex Mobilise WA <br />ABN: [52667400704]</p>
               </div>
@@ -402,7 +402,7 @@ export default function App() {
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
             {!mainLogoFailed && (
               <img 
-                src="/logo.png" 
+                src="/logo.svg" 
                 alt="Ex Mobilise WA Logo" 
                 className="h-8 w-8 mr-3 object-contain grayscale opacity-70"
               />
@@ -412,7 +412,7 @@ export default function App() {
             <span className="ml-1.5 text-base font-light text-slate-500 tracking-widest">[WA]</span>
           </div>
           <p className="font-bold text-slate-400 mb-2 uppercase tracking-widest"> &copy; {new Date().getFullYear()} All Rights Reserved</p>
-          <p>Lead inspection and HAVD services for the Western Australian offshore sector.</p>
+          <p>Lead inspection and HAVD services for the Australian and international energy sectors.</p>
         </div>
       </footer>
     </div>
