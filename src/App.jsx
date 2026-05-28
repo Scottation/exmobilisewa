@@ -24,6 +24,7 @@ export default function App() {
   
   // Track logo loading failures to dynamically fall back to clean text rendering
   const [failedLogos, setFailedLogos] = useState({});
+  const [mainLogoFailed, setMainLogoFailed] = useState(false);
 
   // List of partner/operator logos expected in the /public/logos/ directory
   const partnerLogos = [
@@ -82,12 +83,25 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
-              <div className="bg-amber-500 flex items-center justify-center h-10 w-10 mr-3" style={hexClipPath}>
-                <Zap className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
-              </div>
+              {!mainLogoFailed ? (
+                <img 
+                  src="/logo.png" 
+                  alt="Ex Mobilise WA Logo" 
+                  className="h-10 w-10 mr-3 object-contain drop-shadow-md"
+                  onError={() => setMainLogoFailed(true)}
+                />
+              ) : (
+                <div className="bg-amber-500 flex items-center justify-center h-10 w-10 mr-3" style={hexClipPath}>
+                  <Zap className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
+                </div>
+              )}
               <div>
-                <span className="block text-xl font-bold text-white tracking-tight leading-none uppercase">ExMobilise WA</span>
-                <span className="block text-[10px] text-amber-500 font-bold tracking-[0.2em] mt-1 uppercase">EEHA Inspection SME</span>
+                <div className="flex items-center leading-none mb-1">
+                  <span className="inline-block border-[2px] border-amber-500 text-amber-500 font-black italic text-sm px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
+                  <span className="text-xl font-bold text-white tracking-tight uppercase">Mobilise</span>
+                  <span className="ml-1.5 text-lg font-light text-slate-400 lowercase tracking-widest">[wa]</span>
+                </div>
+                <span className="block text-[10px] text-amber-500 font-bold tracking-[0.2em] uppercase">EEHA Inspection SME</span>
               </div>
             </div>
 
@@ -245,7 +259,7 @@ export default function App() {
               {[
                 { title: 'Pre-Mob Inspections', desc: 'Visual, Close, and Detailed inspections for temporary gear heading offshore.', icon: ShieldCheck },
                 { title: 'HAVD Compilation', desc: 'Creation and auditing of Verification Dossiers to meet specific Operator standards.', icon: FileCheck },
-                { title: 'Ex Rectification', desc: 'Technical solutions for non-conformances found during pre-mobilisation checks.', icon: Wrench },
+                { title: 'Ex Rectification', desc: 'Technical solutions for non-conformances found during yard gate-checks.', icon: Wrench },
                 { title: 'SME Consulting', desc: 'Guidance on AS/NZS 60079 requirements for new equipment procurement.', icon: Award }
               ].map((s, i) => (
                 <div key={i} className="p-6 border-l-4 border-amber-500 bg-slate-50">
@@ -277,7 +291,7 @@ export default function App() {
               <p className="text-xl text-amber-500 font-bold mb-6 italic">"Integrity isn't just about the equipment; it's about the sign-off."</p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  With extensive experience across the North West Shelf and the Pilbara, I established <strong>ExMobilise WA</strong> to provide a specialized, high-trust alternative to large inspection firms.
+                  With extensive experience across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [wa]</strong> to provide a specialized, high-trust alternative to large inspection firms.
                 </p>
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
@@ -342,7 +356,7 @@ export default function App() {
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
-              <p className="text-base font-bold text-slate-600 uppercase">ExMobilise WA <br />ABN: [52667400704]</p>
+              <p className="text-base font-bold text-slate-600 uppercase">Ex Mobilise WA <br />ABN: [52667400704]</p>
             </div>
           </div>
         </div>
@@ -350,8 +364,13 @@ export default function App() {
 
       {/* --- FOOTER --- */}
       <footer className="bg-slate-900 py-12 text-slate-500 text-sm border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="font-bold text-slate-300 mb-2 uppercase tracking-widest">ExMobilise WA &copy; 2026</p>
+        <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
+          <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer" onClick={() => scrollToSection('home')}>
+            <span className="inline-block border-[2px] border-slate-500 text-slate-500 font-black italic text-xs px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
+            <span className="text-lg font-bold text-slate-300 tracking-tight uppercase">Mobilise</span>
+            <span className="ml-1.5 text-base font-light text-slate-500 lowercase tracking-widest">[wa]</span>
+          </div>
+          <p className="font-bold text-slate-400 mb-2 uppercase tracking-widest"> &copy; {new Date().getFullYear()} All Rights Reserved</p>
           <p>Lead inspection and HAVD services for the Western Australian offshore sector.</p>
         </div>
       </footer>
