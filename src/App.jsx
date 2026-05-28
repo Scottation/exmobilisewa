@@ -464,7 +464,7 @@ export default function App() {
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Operations & Deployment</p>
               <p className="text-base font-bold text-slate-600 uppercase">Perth Headquartered — Nationwide Availability</p>
-              <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto md:mx-0">Available for local metro yard inspections (supported by Air2Work facilities) and mobilization to sites across Australia.</p>
+              <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto md:mx-0">Available for local metro yard inspections and mobilization to sites across Australia.</p>
               
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 mt-6">Direct Contact</p>
               <a href="mailto:inspections@exmobilisewa.com.au" className="block text-xl font-black hover:text-amber-500 transition-colors">inspections@exmobilisewa.com.au</a>
