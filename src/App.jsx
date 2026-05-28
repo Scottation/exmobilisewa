@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, 
   FileCheck, 
@@ -22,37 +22,81 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   
-  // Track main logo state to try SVG first, then PNG, then fail
+  // Track main logo state to try SVG first, then PNG, then JPG, then fail
   const [mainLogoExt, setMainLogoExt] = useState('svg');
   const [mainLogoFailed, setMainLogoFailed] = useState(false);
 
-  // Track partner logo states to try PNG first, then SVG, then fail
+  // Track partner logo states to try PNG first, then SVG, then JPG, then fail
   const [failedLogos, setFailedLogos] = useState({});
   const [partnerExts, setPartnerExts] = useState({});
 
+  // ==========================================
+  // 📸 YOUR SLIDESHOW PHOTOS GO HERE
+  // ==========================================
+  // You can name your files whatever you want in GitHub! 
+  // Just type the exact file names into these lists below.
+  // Make sure they are wrapped in quotes and separated by commas.
+  
+  const kitPhotos = [
+    '/photos/kit (1).jpg',
+    '/photos/kit (2).jpg',
+    '/photos/kit (3).jpg'
+  ];
+
+  const docPhotos = [
+    '/photos/doc (1).jpg',
+    '/photos/doc (2).jpg',
+    '/photos/doc (3).jpg'
+  ];
+
+  // ==========================================
+
+  const [currentKitIdx, setCurrentKitIdx] = useState(0);
+  const [currentDocIdx, setCurrentDocIdx] = useState(0);
+  const [failedKitPhotos, setFailedKitPhotos] = useState({});
+  const [failedDocPhotos, setFailedDocPhotos] = useState({});
+
   // List of partner/operator logos expected in the /public/logos/ directory
-  // Now using 'baseName' so we can dynamically check for different extensions
   const partnerLogos = [
     { name: "AIR2WORK", baseName: "air2work" },
   ];
 
+  // Randomize slideshows every 5 seconds
+  useEffect(() => {
+    const kitInterval = setInterval(() => {
+      setCurrentKitIdx(prev => {
+        let next = Math.floor(Math.random() * kitPhotos.length);
+        return next === prev ? (next + 1) % kitPhotos.length : next;
+      });
+    }, 5000);
+
+    const docInterval = setInterval(() => {
+      setCurrentDocIdx(prev => {
+        let next = Math.floor(Math.random() * docPhotos.length);
+        return next === prev ? (next + 1) % docPhotos.length : next;
+      });
+    }, 5000);
+
+    return () => {
+      clearInterval(kitInterval);
+      clearInterval(docInterval);
+    };
+  }, [kitPhotos.length, docPhotos.length]);
+
   const handleMainLogoError = () => {
-    if (mainLogoExt === 'svg') {
-      setMainLogoExt('png'); // Fallback to PNG if SVG isn't found
-    } else {
-      setMainLogoFailed(true); // Both failed, show the fallback Hexagon/Text
-    }
+    if (mainLogoExt === 'svg') setMainLogoExt('png');
+    else if (mainLogoExt === 'png') setMainLogoExt('jpg');
+    else setMainLogoFailed(true);
   };
 
   const handlePartnerLogoError = (name) => {
     setPartnerExts(prev => {
       const currentExt = prev[name] || 'png';
-      if (currentExt === 'png') {
-        return { ...prev, [name]: 'svg' }; // Fallback to SVG if PNG isn't found
-      } else {
-        setFailedLogos(fails => ({ ...fails, [name]: true })); // Both failed, show Text
-        return prev;
-      }
+      if (currentExt === 'png') return { ...prev, [name]: 'svg' };
+      if (currentExt === 'svg') return { ...prev, [name]: 'jpg' };
+      
+      setFailedLogos(fails => ({ ...fails, [name]: true }));
+      return prev;
     });
   };
 
@@ -69,7 +113,6 @@ export default function App() {
     setFormStatus('submitting');
     const formData = new FormData(e.target);
     
-    // ENSURE YOUR ACCESS KEY IS HERE
     formData.append("access_key", "e5e7d78e-b3bd-46c1-901e-a88ccb01d584"); 
     formData.append("subject", "New Pre-Mob Inspection Request - ExMobilise WA");
 
@@ -154,7 +197,6 @@ export default function App() {
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
-          {/* Hero text */}
           <div className="md:w-3/5 text-center md:text-left">
             <div className="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
               <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
@@ -177,7 +219,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Inspection Test Record (ITR) Interactive Mock-up Document */}
           <div className="w-full md:w-2/5 relative">
             <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-2xl relative z-10 transform rotate-2 hover:rotate-0 hover:-translate-y-2 transition-all duration-500 cursor-pointer group">
               <div className="flex justify-between items-center mb-6 border-b border-slate-700/60 pb-4">
@@ -231,8 +272,6 @@ export default function App() {
                 </div>
               </div>
             </div>
-            
-            {/* Soft decorative golden glow behind the ITR Document */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-amber-500/10 blur-3xl rounded-full -z-0 pointer-events-none"></div>
           </div>
         </div>
@@ -244,7 +283,6 @@ export default function App() {
           <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Proudly Partnered With</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
             {partnerLogos.map((logo) => {
-              // If the image failed to load (or hasn't been uploaded yet), render the beautiful fallback text
               if (failedLogos[logo.name]) {
                 return (
                   <span key={logo.name} className="text-xl font-black text-slate-400 select-none">
@@ -299,10 +337,9 @@ export default function App() {
           <div className="flex flex-col md:flex-row gap-16 items-center">
             <div className="w-full md:w-1/3">
               <div className="aspect-[4/5] bg-slate-800 rounded-2xl border-2 border-amber-500 overflow-hidden relative group">
-                {/* Replace with actual image upload later */}
                 <div className="absolute inset-0 flex items-center justify-center">
                    <Users className="h-20 w-20 text-slate-700" />
-                   <p className="absolute bottom-4 text-[10px] text-slate-500 uppercase tracking-widest">[ Headshot Image Placeholder ]</p>
+                   <p className="absolute bottom-4 text-[10px] text-slate-500 uppercase tracking-widest text-center px-4">Upload headshot.jpg to /public/photos/</p>
                 </div>
               </div>
             </div>
@@ -335,7 +372,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* --- FIELD READINESS (Kit & Paperwork Placeholders) --- */}
+      {/* --- FIELD READINESS (Random Slideshow Arrays) --- */}
       <section className="py-20 bg-slate-50 border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -343,20 +380,49 @@ export default function App() {
             <p className="text-lg text-slate-600">Rigorous physical inspections backed by immaculate Verification Dossiers.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
+            
+            {/* Left Slideshow Box (Kit Photos) */}
             <div className="aspect-video bg-slate-200 rounded-xl border-2 border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group shadow-sm">
-              <HardHat className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">[ Equipment Photo Placeholder ]</p>
+              {!failedKitPhotos[kitPhotos[currentKitIdx]] ? (
+                <img 
+                  key={kitPhotos[currentKitIdx]}
+                  src={kitPhotos[currentKitIdx]} 
+                  alt="Equipment Scope" 
+                  className="w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+                  onError={() => setFailedKitPhotos(prev => ({...prev, [kitPhotos[currentKitIdx]]: true}))}
+                />
+              ) : (
+                <>
+                  <HardHat className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest text-center px-6">Upload exact file names from code to /public/photos/</p>
+                </>
+              )}
               <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <p className="text-white font-bold text-center uppercase tracking-wider text-sm">Physical Ex Inspections</p>
               </div>
             </div>
+
+            {/* Right Slideshow Box (Dossier/Doc Photos) */}
             <div className="aspect-video bg-slate-200 rounded-xl border-2 border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group shadow-sm">
-              <FileCheck className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">[ Dossier Photo Placeholder ]</p>
+              {!failedDocPhotos[docPhotos[currentDocIdx]] ? (
+                <img 
+                  key={docPhotos[currentDocIdx]}
+                  src={docPhotos[currentDocIdx]} 
+                  alt="Documentation Scope" 
+                  className="w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+                  onError={() => setFailedDocPhotos(prev => ({...prev, [docPhotos[currentDocIdx]]: true}))}
+                />
+              ) : (
+                <>
+                  <FileCheck className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest text-center px-6">Upload exact file names from code to /public/photos/</p>
+                </>
+              )}
               <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <p className="text-white font-bold text-center uppercase tracking-wider text-sm">Verification Dossiers (HAVD)</p>
               </div>
             </div>
+
           </div>
         </div>
       </section>
