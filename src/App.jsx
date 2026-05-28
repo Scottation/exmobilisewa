@@ -22,8 +22,12 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   
-  // ==========================================
-  // 📸 YOUR SLIDESHOW PHOTOS GO HERE
+  // Add new states for Gemini Decoder
+  const [exCodeInput, setExCodeInput] = useState('');
+  const [decodedResult, setDecodedResult] = useState('');
+  const [isDecoding, setIsDecoding] = useState(false);
+  const [decodeError, setDecodeError] = useState('');
+
   // ==========================================
   const kitPhotos = [
     '/photos/kit (1).jpg',
@@ -104,6 +108,56 @@ export default function App() {
     }
   };
 
+  // --- GEMINI API INTEGRATION: EX RATING DECODER ---
+  const handleDecodeExRating = async () => {
+    if (!exCodeInput.trim()) return;
+    setIsDecoding(true);
+    setDecodeError('');
+    setDecodedResult('');
+
+    const apiKey = ""; // API Key provided automatically by the environment
+    
+    // The prompt instructs the LLM to act as an SME and format cleanly
+    const prompt = `You are an absolute expert in EEHA (Electrical Equipment in Hazardous Areas) and AS/NZS 60079 compliance. 
+    Decode this ATEX/IECEx rating string: "${exCodeInput}"
+    Break down the Protection Concept(s), Gas/Dust Group, Temperature Class, and Equipment Protection Level (EPL) in a concise, highly professional manner suitable for an oil and gas engineer. 
+    Format as a clean, easy-to-read summary. Use markdown **bolding** for the main terms. Do not use headers.`;
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+      
+      if (!response.ok) throw new Error("API response error");
+      
+      const data = await response.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (text) {
+        setDecodedResult(text);
+      } else {
+        throw new Error("Invalid response format");
+      }
+    } catch (error) {
+      console.error(error);
+      setDecodeError("Could not decode at this time. Please check your connection or try again.");
+    } finally {
+      setIsDecoding(false);
+    }
+  };
+
+  // Helper function to render bold markdown text returned by Gemini
+  const formatResult = (text) => {
+    const parts = text.split(/\*\*(.*?)\*\*/g);
+    return parts.map((part, i) => 
+      i % 2 === 1 ? <strong key={i} className="text-amber-500 font-bold">{part}</strong> : part
+    );
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-500 selection:text-slate-900">
       
@@ -111,12 +165,12 @@ export default function App() {
       <nav className="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
-            {/* Unified Logo/Name Block */}
+            {/* Unified Logo/Name Block (Height increased to h-11) */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               <img 
                 src="/logo.png" 
                 alt="Ex Mobilise [WA] Logo" 
-                className="h-10 w-auto object-contain drop-shadow-md"
+                className="h-11 w-auto object-contain drop-shadow-md"
               />
             </div>
 
@@ -216,9 +270,8 @@ export default function App() {
                 </div>
 
                 <div className="pt-4 border-t border-slate-700/40 flex justify-between items-center text-xs text-slate-400 mt-4">
-                  {/* Cleaned up Sign-off (Removed coded text) */}
+                  {/* Cleaned up Sign-off */}
                   <div>
-                    {/* The logo in the header handles the visual sign-off now */}
                     <p className="font-bold text-slate-300">Approving Inspector</p>
                     <p className="font-mono text-[10px] text-amber-500">Subject Matter Expert</p>
                   </div>
@@ -373,6 +426,64 @@ export default function App() {
         </div>
       </section>
 
+      {/* --- SME TOOLS: GEMINI AI EX RATING DECODER --- */}
+      <section className="py-24 bg-slate-900 text-white relative overflow-hidden border-t border-amber-500">
+        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-amber-500 via-slate-900 to-slate-900"></div>
+        <div className="max-w-4xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
+              <Zap className="h-4 w-4 text-amber-500" />
+              <span className="text-xs font-bold text-amber-500 tracking-widest uppercase">AI-Powered Tool</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black uppercase mb-4">Ex Rating Decoder</h2>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto">Not sure what a nameplate means? Instantly break down complex hazardous area equipment ratings into plain, compliant English.</p>
+          </div>
+
+          <div className="bg-slate-800 rounded-2xl p-6 md:p-8 border border-slate-700 shadow-2xl max-w-3xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <input 
+                type="text" 
+                value={exCodeInput}
+                onChange={(e) => setExCodeInput(e.target.value)}
+                placeholder="e.g., Ex db eb IIB T4 Gb" 
+                className="flex-grow bg-slate-900 text-white px-6 py-4 rounded-xl border-2 border-slate-700 focus:border-amber-500 focus:ring-0 transition-all font-mono font-bold"
+                onKeyDown={(e) => e.key === 'Enter' && handleDecodeExRating()}
+              />
+              <button 
+                onClick={handleDecodeExRating}
+                disabled={isDecoding || !exCodeInput.trim()}
+                className="bg-amber-500 text-slate-900 font-black px-8 py-4 rounded-xl uppercase tracking-widest hover:bg-amber-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {isDecoding ? 'Decoding...' : 'Decode ✨'}
+              </button>
+            </div>
+
+            {/* Results Area */}
+            {decodeError && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm font-bold flex items-center">
+                <AlertTriangle className="mr-2 h-5 w-5" /> {decodeError}
+              </div>
+            )}
+            
+            {decodedResult && !decodeError && (
+              <div className="mt-6 p-6 bg-slate-900 rounded-xl border border-slate-700">
+                <h4 className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-4 border-b border-slate-800 pb-2">Analysis Result</h4>
+                <div className="text-slate-300 text-sm md:text-base leading-relaxed space-y-3 font-medium whitespace-pre-line">
+                  {formatResult(decodedResult.replace(/##/g, ''))}
+                </div>
+              </div>
+            )}
+            
+            {!decodedResult && !decodeError && !isDecoding && (
+               <div className="mt-6 p-6 bg-slate-900/50 rounded-xl border border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-500 text-center">
+                 <ShieldCheck className="h-10 w-10 mb-3 opacity-50" />
+                 <p className="text-sm font-medium">Enter a rating string above (like <strong>Ex d e IIC T4</strong>) to analyze it against AS/NZS 60079 parameters.</p>
+               </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* --- CONTACT SECTION --- */}
       <section id="contact" className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4">
@@ -419,7 +530,8 @@ export default function App() {
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
-                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-12 w-auto mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
+                {/* Contact block logo (Height increased to h-14) */}
+                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-14 w-auto mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
                 <p className="text-base font-bold text-slate-600 uppercase">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
@@ -434,10 +546,11 @@ export default function App() {
       <footer className="bg-slate-900 py-12 text-slate-500 text-sm border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
+            {/* Footer logo (Height increased to h-12) */}
             <img 
               src="/logo.png" 
               alt="Ex Mobilise WA Logo" 
-              className="h-10 w-auto object-contain grayscale opacity-70"
+              className="h-12 w-auto object-contain grayscale opacity-70"
             />
           </div>
           
