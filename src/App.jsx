@@ -22,17 +22,38 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   
-  // Track logo loading failures to dynamically fall back to clean text rendering
-  const [failedLogos, setFailedLogos] = useState({});
+  // Track main logo state to try SVG first, then PNG, then fail
+  const [mainLogoExt, setMainLogoExt] = useState('svg');
   const [mainLogoFailed, setMainLogoFailed] = useState(false);
 
+  // Track partner logo states to try PNG first, then SVG, then fail
+  const [failedLogos, setFailedLogos] = useState({});
+  const [partnerExts, setPartnerExts] = useState({});
+
   // List of partner/operator logos expected in the /public/logos/ directory
+  // Now using 'baseName' so we can dynamically check for different extensions
   const partnerLogos = [
-    { name: "AIR2WORK", path: "/logos/air2work.png" },
+    { name: "AIR2WORK", baseName: "air2work" },
   ];
 
-  const handleLogoError = (name) => {
-    setFailedLogos(prev => ({ ...prev, [name]: true }));
+  const handleMainLogoError = () => {
+    if (mainLogoExt === 'svg') {
+      setMainLogoExt('png'); // Fallback to PNG if SVG isn't found
+    } else {
+      setMainLogoFailed(true); // Both failed, show the fallback Hexagon/Text
+    }
+  };
+
+  const handlePartnerLogoError = (name) => {
+    setPartnerExts(prev => {
+      const currentExt = prev[name] || 'png';
+      if (currentExt === 'png') {
+        return { ...prev, [name]: 'svg' }; // Fallback to SVG if PNG isn't found
+      } else {
+        setFailedLogos(fails => ({ ...fails, [name]: true })); // Both failed, show Text
+        return prev;
+      }
+    });
   };
 
   const scrollToSection = (id) => {
@@ -82,10 +103,10 @@ export default function App() {
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               {!mainLogoFailed ? (
                 <img 
-                  src="/logo.svg" 
+                  src={`/logo.${mainLogoExt}`} 
                   alt="Ex Mobilise WA Logo" 
                   className="h-10 w-10 mr-3 object-contain drop-shadow-md"
-                  onError={() => setMainLogoFailed(true)}
+                  onError={handleMainLogoError}
                 />
               ) : (
                 <div className="bg-amber-500 flex items-center justify-center h-10 w-10 mr-3" style={hexClipPath}>
@@ -234,9 +255,9 @@ export default function App() {
               return (
                 <img 
                   key={logo.name}
-                  src={logo.path}
+                  src={`/logos/${logo.baseName}.${partnerExts[logo.name] || 'png'}`}
                   alt={`${logo.name} Logo`}
-                  onError={() => handleLogoError(logo.name)}
+                  onError={() => handlePartnerLogoError(logo.name)}
                   className="h-8 md:h-10 object-contain transition-all"
                 />
               );
@@ -387,7 +408,7 @@ export default function App() {
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
                 {!mainLogoFailed && (
-                  <img src="/logo.svg" alt="Ex Mobilise WA Logo" className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
+                  <img src={`/logo.${mainLogoExt}`} alt="Ex Mobilise WA Logo" onError={handleMainLogoError} className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
                 )}
                 <p className="text-base font-bold text-slate-600 uppercase">Ex Mobilise WA <br />ABN: [52667400704]</p>
               </div>
@@ -402,8 +423,9 @@ export default function App() {
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
             {!mainLogoFailed && (
               <img 
-                src="/logo.svg" 
+                src={`/logo.${mainLogoExt}`} 
                 alt="Ex Mobilise WA Logo" 
+                onError={handleMainLogoError}
                 className="h-8 w-8 mr-3 object-contain grayscale opacity-70"
               />
             )}
