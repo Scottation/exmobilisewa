@@ -28,10 +28,7 @@ export default function App() {
 
   // List of partner/operator logos expected in the /public/logos/ directory
   const partnerLogos = [
-    { name: "WOODSIDE", path: "/logos/woodside.png" },
-    { name: "CHEVRON", path: "/logos/chevron.png" },
-    { name: "SANTOS", path: "/logos/santos.png" },
-    { name: "RIO TINTO", path: "/logos/riotinto.png" },
+    { name: "AIR2WORK", path: "/logos/air2work.png" },
   ];
 
   const handleLogoError = (name) => {
@@ -99,7 +96,7 @@ export default function App() {
                 <div className="flex items-center leading-none mb-1">
                   <span className="inline-block border-[2px] border-amber-500 text-amber-500 font-black italic text-sm px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
                   <span className="text-xl font-bold text-white tracking-tight uppercase">Mobilise</span>
-                  <span className="ml-1.5 text-lg font-light text-slate-400 lowercase tracking-widest">[wa]</span>
+                  <span className="ml-1.5 text-lg font-light text-slate-400 tracking-widest">[WA]</span>
                 </div>
                 <span className="block text-[10px] text-amber-500 font-bold tracking-[0.2em] uppercase">EEHA Inspection SME</span>
               </div>
@@ -140,14 +137,14 @@ export default function App() {
           <div className="md:w-3/5 text-center md:text-left">
             <div className="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-6">
               <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
-              <span className="text-xs font-bold text-amber-500 tracking-widest uppercase">Now Serving WA Oil & Gas</span>
+              <span className="text-xs font-bold text-amber-500 tracking-widest uppercase">Now Serving Australian Oil & Gas</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight mb-6">
               PRE-MOBILISATION <br />
               <span className="text-amber-500 italic">COMPLIANCE.</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-xl leading-relaxed">
-              We ensure your skids, portables, and temporary equipment pass major operator gate checks. Expert EEHA inspections and dossier compilation for a seamless North West Shelf entry.
+              We ensure your skids, portables, and temporary equipment pass major operator gate checks. Expert EEHA inspections and dossier compilation for a seamless entry to any Australian onshore or offshore facility.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button onClick={() => scrollToSection('contact')} className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-8 py-4 rounded-md font-bold text-lg transition-all flex items-center justify-center">
@@ -223,7 +220,7 @@ export default function App() {
       {/* --- TRUST BAR --- */}
       <div className="bg-slate-100 py-8 border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 overflow-hidden">
-          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Deep Experience Across WA Projects</p>
+          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Proudly Partnered With</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
             {partnerLogos.map((logo) => {
               // If the image failed to load (or hasn't been uploaded yet), render the beautiful fallback text
@@ -275,7 +272,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* --- ABOUT THE SME (Ephrain's Feedback) --- */}
+      {/* --- ABOUT THE SME --- */}
       <section id="about" className="py-24 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-16 items-center">
@@ -293,7 +290,7 @@ export default function App() {
               <p className="text-xl text-amber-500 font-bold mb-6 italic">"Integrity isn't just about the equipment; it's about the sign-off."</p>
               <div className="space-y-6 text-slate-300 text-lg md:text-xl leading-relaxed">
                 <p>
-                  With extensive experience across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [wa]</strong> to provide a specialized, high-trust alternative to large inspection firms.
+                  With extensive experience across the North West Shelf and the Pilbara, I established <strong>Ex Mobilise [WA]</strong> to provide a specialized, high-trust alternative to large inspection firms.
                 </p>
                 <p>
                   I am a Subject Matter Expert (SME) in <strong>EEHA Compliance</strong>, focusing on the unique challenges of temporary, transportable, and hired equipment. I understand the "Zero Tolerance" gate-checks of major operators because I've been on the other side of them.
@@ -311,6 +308,32 @@ export default function App() {
                   <h4 className="text-amber-500 font-black text-3xl mb-1 mt-1">Zero</h4>
                   <p className="text-sm font-bold uppercase tracking-wider text-slate-500">Compromise</p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FIELD READINESS (Kit & Paperwork Placeholders) --- */}
+      <section className="py-20 bg-slate-50 border-t border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black uppercase mb-4 text-slate-900">From Yard to Site</h2>
+            <p className="text-lg text-slate-600">Rigorous physical inspections backed by immaculate Verification Dossiers.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="aspect-video bg-slate-200 rounded-xl border-2 border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group shadow-sm">
+              <HardHat className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
+              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">[ Equipment Photo Placeholder ]</p>
+              <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white font-bold text-center uppercase tracking-wider text-sm">Physical Ex Inspections</p>
+              </div>
+            </div>
+            <div className="aspect-video bg-slate-200 rounded-xl border-2 border-slate-300 flex flex-col items-center justify-center relative overflow-hidden group shadow-sm">
+              <FileCheck className="h-16 w-16 text-slate-400 mb-4 group-hover:scale-110 transition-transform duration-500" />
+              <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">[ Dossier Photo Placeholder ]</p>
+              <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white font-bold text-center uppercase tracking-wider text-sm">Verification Dossiers (HAVD)</p>
               </div>
             </div>
           </div>
@@ -352,7 +375,11 @@ export default function App() {
           
           <div className="mt-16 grid md:grid-cols-2 gap-8 text-center md:text-left">
             <div>
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Direct Contact</p>
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Operations</p>
+              <p className="text-base font-bold text-slate-600 uppercase">Perth, Western Australia</p>
+              <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto md:mx-0">Available for metro yard inspections (Supported by Air2Work facilities) and regional site deployments.</p>
+              
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 mt-6">Direct Contact</p>
               <a href="mailto:inspections@exmobilisewa.com.au" className="block text-xl font-black hover:text-amber-500 transition-colors">inspections@exmobilisewa.com.au</a>
               <a href="tel:+61434101707" className="block text-xl font-black text-amber-600 hover:text-amber-500 transition-colors">0434 101 707</a>
             </div>
@@ -382,7 +409,7 @@ export default function App() {
             )}
             <span className="inline-block border-[2px] border-slate-500 text-slate-500 font-black italic text-xs px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
             <span className="text-lg font-bold text-slate-300 tracking-tight uppercase">Mobilise</span>
-            <span className="ml-1.5 text-base font-light text-slate-500 lowercase tracking-widest">[wa]</span>
+            <span className="ml-1.5 text-base font-light text-slate-500 tracking-widest">[WA]</span>
           </div>
           <p className="font-bold text-slate-400 mb-2 uppercase tracking-widest"> &copy; {new Date().getFullYear()} All Rights Reserved</p>
           <p>Lead inspection and HAVD services for the Western Australian offshore sector.</p>
