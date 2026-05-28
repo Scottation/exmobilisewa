@@ -149,7 +149,7 @@ export default function App() {
     setDecodeError('');
     setDecodedResult('');
 
-    const apiKey = ""; // API Key provided automatically by the execution environment
+    const apiKey = "AIzaSyCglIjWiAjSToMlsXgKT4wEylyqVQ04lpo"; // API Key provided automatically by the execution environment
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
     
     const payload = {
