@@ -183,7 +183,7 @@ export default function App() {
               <img 
                 src="/logo.png" 
                 alt="Ex Mobilise [WA] Logo" 
-                className="h-14 md:h-16 w-auto object-contain drop-shadow-md"
+                className="h-16 md:h-20 w-auto object-contain drop-shadow-md"
               />
             </div>
 
@@ -543,7 +543,7 @@ export default function App() {
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
                 {/* Contact block logo (Height increased significantly to h-16/md:h-20) */}
-                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
+                <img src="/logobt.png" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
                 <p className="text-base font-bold text-slate-600 uppercase mt-2">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
