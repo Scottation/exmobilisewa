@@ -29,6 +29,8 @@ export default function App() {
   const [decodeError, setDecodeError] = useState('');
 
   // ==========================================
+  // 📸 YOUR SLIDESHOW PHOTOS GO HERE
+  // ==========================================
   const kitPhotos = [
     '/photos/kit (1).jpg',
     '/photos/kit (2).jpg',
@@ -115,39 +117,50 @@ export default function App() {
     setDecodeError('');
     setDecodedResult('');
 
-    const apiKey = ""; // API Key provided automatically by the environment
+    const apiKey = ""; // API Key provided automatically by the execution environment
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
     
-    // The prompt instructs the LLM to act as an SME and format cleanly
-    const prompt = `You are an absolute expert in EEHA (Electrical Equipment in Hazardous Areas) and AS/NZS 60079 compliance. 
-    Decode this ATEX/IECEx rating string: "${exCodeInput}"
-    Break down the Protection Concept(s), Gas/Dust Group, Temperature Class, and Equipment Protection Level (EPL) in a concise, highly professional manner suitable for an oil and gas engineer. 
-    Format as a clean, easy-to-read summary. Use markdown **bolding** for the main terms. Do not use headers.`;
-
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      });
-      
-      if (!response.ok) throw new Error("API response error");
-      
-      const data = await response.json();
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      
-      if (text) {
-        setDecodedResult(text);
-      } else {
-        throw new Error("Invalid response format");
+    const payload = {
+      contents: [{ parts: [{ text: `Decode this ATEX/IECEx rating string: "${exCodeInput}"` }] }],
+      systemInstruction: { 
+        parts: [{ 
+          text: "You are an absolute expert in EEHA (Electrical Equipment in Hazardous Areas) and AS/NZS 60079 compliance. Break down the Protection Concept(s), Gas/Dust Group, Temperature Class, and Equipment Protection Level (EPL) in a concise, highly professional manner suitable for an oil and gas engineer. Format as a clean, easy-to-read summary. Use markdown **bolding** for the main terms. Do not use headers." 
+        }] 
       }
-    } catch (error) {
-      console.error(error);
-      setDecodeError("Could not decode at this time. Please check your connection or try again.");
-    } finally {
-      setIsDecoding(false);
+    };
+
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    };
+
+    // Exponential backoff retry logic as required by the environment
+    const delays = [1000, 2000, 4000, 8000, 16000];
+    let success = false;
+    let data = null;
+
+    for (let i = 0; i < 5; i++) {
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error("API response error");
+        data = await response.json();
+        success = true;
+        break; 
+      } catch (error) {
+        if (i < 4) {
+          await new Promise(resolve => setTimeout(resolve, delays[i]));
+        }
+      }
     }
+
+    if (success && data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      setDecodedResult(data.candidates[0].content.parts[0].text);
+    } else {
+      setDecodeError("Could not decode at this time. Please check your connection or try again.");
+    }
+    
+    setIsDecoding(false);
   };
 
   // Helper function to render bold markdown text returned by Gemini
@@ -161,16 +174,16 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-500 selection:text-slate-900">
       
-      {/* --- NAVIGATION (Now using unified logo.png) --- */}
+      {/* --- NAVIGATION (Now using unified logo.png, increased size) --- */}
       <nav className="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
-            {/* Unified Logo/Name Block (Height increased to h-11) */}
+          <div className="flex justify-between h-20 md:h-24 items-center transition-all">
+            {/* Unified Logo/Name Block (Height increased significantly) */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               <img 
                 src="/logo.png" 
                 alt="Ex Mobilise [WA] Logo" 
-                className="h-11 w-auto object-contain drop-shadow-md"
+                className="h-14 md:h-16 w-auto object-contain drop-shadow-md"
               />
             </div>
 
@@ -270,7 +283,6 @@ export default function App() {
                 </div>
 
                 <div className="pt-4 border-t border-slate-700/40 flex justify-between items-center text-xs text-slate-400 mt-4">
-                  {/* Cleaned up Sign-off */}
                   <div>
                     <p className="font-bold text-slate-300">Approving Inspector</p>
                     <p className="font-mono text-[10px] text-amber-500">Subject Matter Expert</p>
@@ -466,7 +478,7 @@ export default function App() {
             )}
             
             {decodedResult && !decodeError && (
-              <div className="mt-6 p-6 bg-slate-900 rounded-xl border border-slate-700">
+              <div className="mt-6 p-6 bg-slate-900 rounded-xl border border-slate-700 shadow-inner">
                 <h4 className="text-slate-500 font-bold uppercase tracking-widest text-xs mb-4 border-b border-slate-800 pb-2">Analysis Result</h4>
                 <div className="text-slate-300 text-sm md:text-base leading-relaxed space-y-3 font-medium whitespace-pre-line">
                   {formatResult(decodedResult.replace(/##/g, ''))}
@@ -530,9 +542,9 @@ export default function App() {
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
-                {/* Contact block logo (Height increased to h-14) */}
-                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-14 w-auto mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
-                <p className="text-base font-bold text-slate-600 uppercase">
+                {/* Contact block logo (Height increased significantly to h-16/md:h-20) */}
+                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
+                <p className="text-base font-bold text-slate-600 uppercase mt-2">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
                 </p>
@@ -546,11 +558,11 @@ export default function App() {
       <footer className="bg-slate-900 py-12 text-slate-500 text-sm border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
-            {/* Footer logo (Height increased to h-12) */}
+            {/* Footer logo (Height increased to h-14/md:h-16) */}
             <img 
               src="/logo.png" 
               alt="Ex Mobilise WA Logo" 
-              className="h-12 w-auto object-contain grayscale opacity-70"
+              className="h-14 md:h-16 w-auto object-contain grayscale opacity-70"
             />
           </div>
           
