@@ -49,9 +49,12 @@ export default function App() {
   const [failedKitPhotos, setFailedKitPhotos] = useState({});
   const [failedDocPhotos, setFailedDocPhotos] = useState({});
 
-  // Cleaned up partner list (strict PNG for Air2Work)
+  // Robust multi-file extension fallback states
+  const [partnerExts, setPartnerExts] = useState({});
+  const [failedLogos, setFailedLogos] = useState({});
+
   const partnerLogos = [
-    { name: "AIR2WORK", path: "/logos/air2work.png" },
+    { name: "AIR2WORK", baseName: "air2work" },
   ];
 
   // Randomize slideshows every 5 seconds
@@ -108,6 +111,22 @@ export default function App() {
     } catch (error) {
       setFormStatus('error');
     }
+  };
+
+  // True multi-file acceptance loop (checks case-sensitivity and multiple formats)
+  const handlePartnerLogoError = (name) => {
+    const fallbackOrder = ['png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG', 'svg', 'SVG', 'webp'];
+    setPartnerExts(prev => {
+      const currentExt = prev[name] || 'png';
+      const currentIndex = fallbackOrder.indexOf(currentExt);
+      
+      if (currentIndex !== -1 && currentIndex < fallbackOrder.length - 1) {
+        return { ...prev, [name]: fallbackOrder[currentIndex + 1] };
+      }
+      
+      setFailedLogos(fails => ({ ...fails, [name]: true }));
+      return prev;
+    });
   };
 
   // --- GEMINI API INTEGRATION: EX RATING DECODER ---
@@ -181,7 +200,7 @@ export default function App() {
             {/* Unified Logo/Name Block (Height increased significantly) */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               <img 
-                src="/logo.png" 
+                src="/logo.svg" 
                 alt="Ex Mobilise [WA] Logo" 
                 className="h-16 md:h-20 w-auto object-contain drop-shadow-md"
               />
@@ -303,14 +322,24 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 overflow-hidden">
           <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Proudly Partnered With</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
-            {partnerLogos.map((logo) => (
+            {partnerLogos.map((logo) => {
+              if (failedLogos[logo.name]) {
+                return (
+                  <span key={logo.name} className="text-xl font-black text-slate-400 select-none">
+                    {logo.name}
+                  </span>
+                );
+              }
+              return (
                 <img 
                   key={logo.name}
-                  src={logo.path}
+                  src={`/logos/${logo.baseName}.${partnerExts[logo.name] || 'png'}`}
                   alt={`${logo.name} Logo`}
+                  onError={() => handlePartnerLogoError(logo.name)}
                   className="h-8 md:h-10 object-contain transition-all"
                 />
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -543,7 +572,7 @@ export default function App() {
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
                 {/* Contact block logo (Height increased significantly to h-16/md:h-20) */}
-                <img src="/logobt.png" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
+                <img src="/logobt.svg" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
                 <p className="text-base font-bold text-slate-600 uppercase mt-2">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
@@ -560,7 +589,7 @@ export default function App() {
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
             {/* Footer logo (Height increased to h-14/md:h-16) */}
             <img 
-              src="/logo.png" 
+              src="/logo.svg" 
               alt="Ex Mobilise WA Logo" 
               className="h-14 md:h-16 w-auto object-contain grayscale opacity-70"
             />
