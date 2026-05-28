@@ -28,19 +28,31 @@ export default function App() {
   const [isDecoding, setIsDecoding] = useState(false);
   const [decodeError, setDecodeError] = useState('');
 
+  // Robust fallback states for main logos
+  const [navLogoExt, setNavLogoExt] = useState('png');
+  const [contactLogoExt, setContactLogoExt] = useState('png');
+  const [footerLogoExt, setFooterLogoExt] = useState('png');
+
+  const handleExtFallback = (currentExt, setExtFn, fallbackOrder) => {
+    const currentIndex = fallbackOrder.indexOf(currentExt);
+    if (currentIndex !== -1 && currentIndex < fallbackOrder.length - 1) {
+      setExtFn(fallbackOrder[currentIndex + 1]);
+    }
+  };
+
   // ==========================================
   // 📸 YOUR SLIDESHOW PHOTOS GO HERE
   // ==========================================
   const kitPhotos = [
-    '/photos/kit (1).jpg',
-    '/photos/kit (2).jpg',
-    '/photos/kit (3).jpg'
+    '/photos/kit (1).jpeg',
+    '/photos/kit (2).jpeg',
+    '/photos/kit (3).jpeg'
   ];
 
   const docPhotos = [
-    '/photos/doc (1).jpg',
-    '/photos/doc (2).jpg',
-    '/photos/doc (3).jpg'
+    '/photos/doc (1).jpeg',
+    '/photos/doc (2).jpeg',
+    '/photos/doc (3).jpeg'
   ];
   // ==========================================
 
@@ -115,9 +127,9 @@ export default function App() {
 
   // True multi-file acceptance loop (checks case-sensitivity and multiple formats)
   const handlePartnerLogoError = (name) => {
-    const fallbackOrder = ['png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG', 'svg', 'SVG', 'webp'];
+    const fallbackOrder = ['svg', 'SVG', 'png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG', 'webp'];
     setPartnerExts(prev => {
-      const currentExt = prev[name] || 'png';
+      const currentExt = prev[name] || 'svg';
       const currentIndex = fallbackOrder.indexOf(currentExt);
       
       if (currentIndex !== -1 && currentIndex < fallbackOrder.length - 1) {
@@ -200,9 +212,10 @@ export default function App() {
             {/* Unified Logo/Name Block (Height increased significantly) */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               <img 
-                src="/logo.svg" 
+                src={`/logo.${navLogoExt}`} 
                 alt="Ex Mobilise [WA] Logo" 
                 className="h-16 md:h-20 w-auto object-contain drop-shadow-md"
+                onError={() => handleExtFallback(navLogoExt, setNavLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
               />
             </div>
 
@@ -333,7 +346,7 @@ export default function App() {
               return (
                 <img 
                   key={logo.name}
-                  src={`/logos/${logo.baseName}.${partnerExts[logo.name] || 'png'}`}
+                  src={`/logos/${logo.baseName}.${partnerExts[logo.name] || 'svg'}`}
                   alt={`${logo.name} Logo`}
                   onError={() => handlePartnerLogoError(logo.name)}
                   className="h-8 md:h-10 object-contain transition-all"
@@ -572,7 +585,12 @@ export default function App() {
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
                 {/* Contact block logo (Height increased significantly to h-16/md:h-20) */}
-                <img src="/logobt.svg" alt="Ex Mobilise WA Logo" className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" />
+                <img 
+                  src={`/logobt.${contactLogoExt}`} 
+                  alt="Ex Mobilise WA Logo" 
+                  className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" 
+                  onError={() => handleExtFallback(contactLogoExt, setContactLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
+                />
                 <p className="text-base font-bold text-slate-600 uppercase mt-2">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
@@ -589,9 +607,10 @@ export default function App() {
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
             {/* Footer logo (Height increased to h-14/md:h-16) */}
             <img 
-              src="/logo.svg" 
+              src={`/logo.${footerLogoExt}`} 
               alt="Ex Mobilise WA Logo" 
               className="h-14 md:h-16 w-auto object-contain grayscale opacity-70"
+              onError={() => handleExtFallback(footerLogoExt, setFooterLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
             />
           </div>
           
