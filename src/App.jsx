@@ -30,7 +30,8 @@ export default function App() {
 
   // Robust fallback states for main logos
   const [navLogoExt, setNavLogoExt] = useState('png');
-  const [contactLogoExt, setContactLogoExt] = useState('png');
+  const [contactLogoExt, setContactLogoExt] = useState('png'); // Old State, Keep for now to avoid other errors
+  const [contactBTLogoExt, setContactBTLogoExt] = useState('png'); // NEW State for black text logo
   const [footerLogoExt, setFooterLogoExt] = useState('png');
 
   const handleExtFallback = (currentExt, setExtFn, fallbackOrder) => {
@@ -209,12 +210,12 @@ export default function App() {
       <nav className="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 md:h-24 items-center transition-all">
-            {/* Unified Logo/Name Block (Height increased significantly) */}
+            {/* Unified Logo/Name Block (Height increased again from md:h-20 to md:h-22) */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
               <img 
                 src={`/logo.${navLogoExt}`} 
                 alt="Ex Mobilise [WA] Logo" 
-                className="h-16 md:h-20 w-auto object-contain drop-shadow-md"
+                className="h-18 md:h-22 w-auto object-contain drop-shadow-md"
                 onError={() => handleExtFallback(navLogoExt, setNavLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
               />
             </div>
@@ -583,18 +584,26 @@ export default function App() {
             </div>
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
-              <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
-                {/* Contact block logo (Height increased significantly to h-16/md:h-20) */}
-                <img 
-                  src={`/logobt.${contactLogoExt}`} 
-                  alt="Ex Mobilise WA Logo" 
-                  className="h-16 md:h-20 w-auto mb-4 md:mb-0 md:mr-6 object-contain opacity-90" 
-                  onError={() => handleExtFallback(contactLogoExt, setContactLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
-                />
-                <p className="text-base font-bold text-slate-600 uppercase mt-2">
-                  Ex Mobilise WA <br />
-                  <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
-                </p>
+              {/* New Flex container for cleaner layout (Removed doubling business name) */}
+              <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-6 border-l-4 border-amber-500 bg-slate-50 p-6 shadow-md rounded-r-xl">
+                {/* LEFT SIDE: Large logobt.png (increased 10%+ from md:h-20 to md:h-24 for prominent display) */}
+                <div className="flex-shrink-0">
+                  <img 
+                    src={`/logobt.${contactBTLogoExt}`} 
+                    alt="Ex Mobilise WA Logo" 
+                    className="h-20 md:h-24 w-auto object-contain opacity-90" 
+                    onError={() => handleExtFallback(contactBTLogoExt, setContactBTLogoExt, ['png', 'PNG', 'svg', 'SVG'])}
+                  />
+                </div>
+                
+                {/* RIGHT SIDE: ABN & EC Details (Stylized Gray Block for Tier-1 feel) */}
+                <div className="text-left flex-grow">
+                  <div className="p-4 bg-slate-100 rounded-lg border border-slate-200">
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1.5">Compliance</p>
+                    <p className="text-sm font-bold text-slate-600 uppercase">ABN: 52 667 400 704</p>
+                    <p className="text-sm font-bold text-slate-600 uppercase mt-0.5">EC: 15735</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
