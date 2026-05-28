@@ -22,14 +22,6 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   
-  // Track main logo state to try SVG first, then PNG, then JPG, then fail
-  const [mainLogoExt, setMainLogoExt] = useState('svg');
-  const [mainLogoFailed, setMainLogoFailed] = useState(false);
-
-  // Track partner logo states to try PNG first, then SVG, then JPG, then fail
-  const [failedLogos, setFailedLogos] = useState({});
-  const [partnerExts, setPartnerExts] = useState({});
-
   // ==========================================
   // 📸 YOUR SLIDESHOW PHOTOS GO HERE
   // ==========================================
@@ -51,9 +43,9 @@ export default function App() {
   const [failedKitPhotos, setFailedKitPhotos] = useState({});
   const [failedDocPhotos, setFailedDocPhotos] = useState({});
 
-  // List of partner/operator logos expected in the /public/logos/ directory
+  // Cleaned up partner list (strict PNG for Air2Work)
   const partnerLogos = [
-    { name: "AIR2WORK", baseName: "air2work" },
+    { name: "AIR2WORK", path: "/logos/air2work.png" },
   ];
 
   // Randomize slideshows every 5 seconds
@@ -77,23 +69,6 @@ export default function App() {
       clearInterval(docInterval);
     };
   }, [kitPhotos.length, docPhotos.length]);
-
-  const handleMainLogoError = () => {
-    if (mainLogoExt === 'svg') setMainLogoExt('png');
-    else if (mainLogoExt === 'png') setMainLogoExt('jpg');
-    else setMainLogoFailed(true);
-  };
-
-  const handlePartnerLogoError = (name) => {
-    setPartnerExts(prev => {
-      const currentExt = prev[name] || 'png';
-      if (currentExt === 'png') return { ...prev, [name]: 'svg' };
-      if (currentExt === 'svg') return { ...prev, [name]: 'jpg' };
-      
-      setFailedLogos(fails => ({ ...fails, [name]: true }));
-      return prev;
-    });
-  };
 
   const scrollToSection = (id) => {
     setIsMobileMenuOpen(false);
@@ -129,36 +104,20 @@ export default function App() {
     }
   };
 
-  const hexClipPath = { clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
-
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-amber-500 selection:text-slate-900">
       
-      {/* --- NAVIGATION --- */}
+      {/* --- NAVIGATION (Now using unified logo.png) --- */}
       <nav className="fixed w-full z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
+            {/* Unified Logo/Name Block */}
             <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => scrollToSection('home')}>
-              {!mainLogoFailed ? (
-                <img 
-                  src={`/logo.${mainLogoExt}`} 
-                  alt="Ex Mobilise WA Logo" 
-                  className="h-10 w-10 mr-3 object-contain drop-shadow-md"
-                  onError={handleMainLogoError}
-                />
-              ) : (
-                <div className="bg-amber-500 flex items-center justify-center h-10 w-10 mr-3" style={hexClipPath}>
-                  <Zap className="h-5 w-5 text-slate-900" strokeWidth={2.5} />
-                </div>
-              )}
-              <div>
-                <div className="flex items-center leading-none mb-1">
-                  <span className="inline-block border-[2px] border-amber-500 text-amber-500 font-black italic text-sm px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
-                  <span className="text-xl font-bold text-white tracking-tight uppercase">Mobilise</span>
-                  <span className="ml-1.5 text-lg font-light text-slate-400 tracking-widest">[WA]</span>
-                </div>
-                <span className="block text-[10px] text-amber-500 font-bold tracking-[0.2em] uppercase">EEHA Inspection SME</span>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="Ex Mobilise [WA] Logo" 
+                className="h-10 w-auto object-contain drop-shadow-md"
+              />
             </div>
 
             <div className="hidden md:flex space-x-8 items-center">
@@ -257,11 +216,13 @@ export default function App() {
                 </div>
 
                 <div className="pt-4 border-t border-slate-700/40 flex justify-between items-center text-xs text-slate-400 mt-4">
+                  {/* Cleaned up Sign-off (Removed coded text) */}
                   <div>
-                    <p className="font-bold text-slate-300">ExMobilise WA Sign-off</p>
-                    <p className="font-mono text-[10px] text-amber-500">EEHA Subject Matter Expert</p>
+                    {/* The logo in the header handles the visual sign-off now */}
+                    <p className="font-bold text-slate-300">Approving Inspector</p>
+                    <p className="font-mono text-[10px] text-amber-500">Subject Matter Expert</p>
                   </div>
-                  <div className="h-14 w-14 border border-dashed border-amber-500/50 rounded-full flex items-center justify-center text-[9px] text-amber-500 font-extrabold rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 select-none">
+                  <div className="h-14 w-14 border border-dashed border-amber-500/50 rounded-full flex items-center justify-center text-[9px] text-amber-500 font-extrabold rotate-12 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 select-none tracking-wider">
                     APPROVED
                   </div>
                 </div>
@@ -277,24 +238,14 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 overflow-hidden">
           <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-4">Proudly Partnered With</p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
-            {partnerLogos.map((logo) => {
-              if (failedLogos[logo.name]) {
-                return (
-                  <span key={logo.name} className="text-xl font-black text-slate-400 select-none">
-                    {logo.name}
-                  </span>
-                );
-              }
-              return (
+            {partnerLogos.map((logo) => (
                 <img 
                   key={logo.name}
-                  src={`/logos/${logo.baseName}.${partnerExts[logo.name] || 'png'}`}
+                  src={logo.path}
                   alt={`${logo.name} Logo`}
-                  onError={() => handlePartnerLogoError(logo.name)}
                   className="h-8 md:h-10 object-contain transition-all"
                 />
-              );
-            })}
+            ))}
           </div>
         </div>
       </div>
@@ -468,9 +419,7 @@ export default function App() {
             <div>
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Business Details</p>
               <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start">
-                {!mainLogoFailed && (
-                  <img src={`/logo.${mainLogoExt}`} alt="Ex Mobilise WA Logo" onError={handleMainLogoError} className="h-12 w-12 mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
-                )}
+                <img src="/logo.png" alt="Ex Mobilise WA Logo" className="h-12 w-auto mb-3 md:mb-0 md:mr-4 object-contain opacity-90" />
                 <p className="text-base font-bold text-slate-600 uppercase">
                   Ex Mobilise WA <br />
                   <span className="text-sm font-bold text-slate-500 mt-1 block">ABN: 52 667 400 704 <br />EC: 15735</span>
@@ -485,17 +434,11 @@ export default function App() {
       <footer className="bg-slate-900 py-12 text-slate-500 text-sm border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 text-center flex flex-col items-center">
           <div className="flex items-center justify-center mb-6 opacity-80 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => scrollToSection('home')}>
-            {!mainLogoFailed && (
-              <img 
-                src={`/logo.${mainLogoExt}`} 
-                alt="Ex Mobilise WA Logo" 
-                onError={handleMainLogoError}
-                className="h-8 w-8 mr-3 object-contain grayscale opacity-70"
-              />
-            )}
-            <span className="inline-block border-[2px] border-slate-500 text-slate-500 font-black italic text-xs px-1.5 py-0.5 mr-1.5 leading-none rounded-sm">Ex</span>
-            <span className="text-lg font-bold text-slate-300 tracking-tight uppercase">Mobilise</span>
-            <span className="ml-1.5 text-base font-light text-slate-500 tracking-widest">[WA]</span>
+            <img 
+              src="/logo.png" 
+              alt="Ex Mobilise WA Logo" 
+              className="h-10 w-auto object-contain grayscale opacity-70"
+            />
           </div>
           
           <p className="font-bold text-slate-400 mb-2 uppercase tracking-widest"> &copy; {new Date().getFullYear()} All Rights Reserved</p>
